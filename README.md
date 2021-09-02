@@ -12,6 +12,8 @@ $cd src/
 
 $git clone https://github.com/Hansaem-Jeong/fallback_decision.git
 
+$mkdir fallback_decision/include
+
 $cd ../
 
 $catkin_make
