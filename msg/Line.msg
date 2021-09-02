@@ -1,0 +1,11 @@
+float64 timestamp
+float64 linepoly_a_l
+float64 linepoly_a_r
+float64 linepoly_b_l
+float64 linepoly_b_r
+float64 linepoly_c_l
+float64 linepoly_c_r
+float64 linepoly_d_l
+float64 linepoly_d_r
+float64 sensor_line_front_nline_left
+float64 sensor_line_front_nline_right

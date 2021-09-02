@@ -1,0 +1,11 @@
+float64 timestamp
+float64 camera_dtct
+float64 camera_relposy
+float64 camera_relposx
+float64 camera_relvely
+float64 camera_relvelx
+float64 frontradar_dtct
+float64 frontradar_relposy
+float64 frontradar_relposx
+float64 frontradar_relvely
+float64 frontradar_relvelx

@@ -1,0 +1,12 @@
+float64 timestamp
+float64 invehicle_yaw
+float64 invehicle_gloposy
+float64 invehicle_gloposx
+float64 invehicle_velocity
+float64 invehicle_gloaccx
+float64 invehicle_glovelx
+float64 invehicle_glovely
+float64 invehicle_cg2rearbumper
+float64 invehicle_cg2frontbumper
+float64 invehicle_length
+float64 invehicle_width

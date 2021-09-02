@@ -1,0 +1,10 @@
+float64 timestamp
+float64 traffic_rv_gloposy
+float64 traffic_rv_gloposx
+float64 traffic_rv_headingangle
+float64 traffic_rv_glovelx
+float64 traffic_rv_glovely
+float64 traffic_rv_cg2rearbumper
+float64 traffic_rv_cg2frontbumper
+float64 traffic_rv_length
+float64 traffic_rv_width
