@@ -21,4 +21,5 @@ $source devel/setup.bash
 $rosrun fallback_decision fallback_decision
 
 --- in other terminal
+
 $rosbag play ~/{your workspace}/src/fallback_decision/bagfile/aes_data_bagfile.bag
