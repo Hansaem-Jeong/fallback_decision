@@ -2,7 +2,7 @@
 
 $mkdir ~/{your workspace}
 
-$cd ${your workspace}
+$cd ~/{your workspace}
 
 $mkdir src/
 
@@ -12,4 +12,13 @@ $cd src/
 
 $git clone https://github.com/Hansaem-Jeong/fallback_decision.git
 
+$cd ../
 
+$catkin_make
+
+$source devel/setup.bash
+
+$rosrun fallback_decision fallback_decision
+
+--- in other terminal
+$rosbag play ~/{your workspace}/src/fallback_decision/bagfile/aes_data_bagfile.bag
