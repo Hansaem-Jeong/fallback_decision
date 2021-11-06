@@ -5,7 +5,7 @@
 // File: P_result.cpp
 //
 // MATLAB Coder version            : 5.2
-// C/C++ source code generated on  : 01-Sep-2021 20:42:36
+// C/C++ source code generated on  : 06-Nov-2021 17:00:00
 //
 
 // Include Files
@@ -54,28 +54,27 @@ double P_result(const float u[7])
       }
     }
   }
-  // class(u)
   if (idx == 1) {
-    // ACC
-    y = 1.0;
-  } else if (idx == 2) {
-    // CM
-    y = 2.0;
-  } else if (idx == 3) {
-    // DEC
-    y = 3.0;
-  } else if (idx == 4) {
-    // ELCL
-    y = 4.0;
-  } else if (idx == 5) {
-    // ELCR
-    y = 5.0;
-  } else if (idx == 6) {
-    //  ESL
-    y = 6.0;
-  } else {
-    //  ESR
+    // CM 7
     y = 7.0;
+  } else if (idx == 2) {
+    //  ELCL 5
+    y = 5.0;
+  } else if (idx == 3) {
+    //  ELCR 6
+    y = 6.0;
+  } else if (idx == 4) {
+    //  ESL 2
+    y = 2.0;
+  } else if (idx == 5) {
+    //  ESR 3
+    y = 3.0;
+  } else if (idx == 6) {
+    //  ESS 4
+    y = 4.0;
+  } else {
+    //  Not Crash
+    y = 8.0;
   }
   return y;
 }

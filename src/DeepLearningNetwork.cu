@@ -5,7 +5,7 @@
 // File: DeepLearningNetwork.cu
 //
 // GPU Coder version                    : 2.1
-// CUDA/C/C++ source code generated on  : 01-Sep-2021 16:48:58
+// CUDA/C/C++ source code generated on  : 03-Nov-2021 17:28:26
 //
 
 // Include Files
@@ -24,7 +24,6 @@
 #include "MWTensorBase.hpp"
 #include <cstdio>
 
-
 // Named Constants
 const char *errorString{
     "Abnormal termination due to: %s.\nError in %s (line %d)."};
@@ -40,7 +39,7 @@ static void checkCleanupCudaError(cudaError_t errCode, const char *file,
 //
 void aesnet0_0::allocate()
 {
-  this->targetImpl->allocate(367464, 2);
+  this->targetImpl->allocate(275598, 2);
   for (int idx{0}; idx < 10; idx++) {
     this->layers[idx]->allocate();
   }
@@ -118,12 +117,12 @@ void aesnet0_0::setup()
     this->targetImpl->preSetup();
     this->targetImpl->setAutoTune(true);
     (static_cast<MWInputLayer *>(this->layers[0]))
-        ->createInputLayer(this->targetImpl, this->inputTensors[0], 251, 61, 24,
+        ->createInputLayer(this->targetImpl, this->inputTensors[0], 251, 61, 18,
                            0, "", 0);
     (static_cast<MWElementwiseAffineLayer *>(this->layers[1]))
         ->createElementwiseAffineLayer(
-            this->targetImpl, this->layers[0]->getOutputTensor(0), 1, 1, 24, 1,
-            1, 24, false, 1, 1,
+            this->targetImpl, this->layers[0]->getOutputTensor(0), 1, 1, 18, 1,
+            1, 18, false, 1, 1,
             "./src/fallback_decision/src/cnn_aesnet0_0_imageinput_scale.bin",
             "./src/fallback_decision/src/"
             "cnn_aesnet0_0_imageinput_offset.bin",
@@ -131,7 +130,7 @@ void aesnet0_0::setup()
     (static_cast<MWFusedConvReLULayer *>(this->layers[2]))
         ->createFusedConvReLULayer(this->targetImpl, 1,
                                    this->layers[1]->getOutputTensor(0), 3, 3,
-                                   24, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                                   18, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                                    "./src/fallback_decision/src/"
                                    "cnn_aesnet0_0_Convolution Layer 1_w.bin",
                                    "./src/fallback_decision/src/"
@@ -225,7 +224,7 @@ aesnet0_0::aesnet0_0()
   this->inputTensors[0] = new MWTensor<float>;
   this->inputTensors[0]->setHeight(251);
   this->inputTensors[0]->setWidth(61);
-  this->inputTensors[0]->setChannels(24);
+  this->inputTensors[0]->setChannels(18);
   this->inputTensors[0]->setBatchSize(1);
   this->inputTensors[0]->setSequenceLength(1);
 }

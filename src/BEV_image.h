@@ -4,8 +4,8 @@
 // government, commercial, or other organizational use.
 // File: BEV_image.h
 //
-// GPU Coder version                    : 2.1
-// CUDA/C/C++ source code generated on  : 31-Aug-2021 16:30:47
+// MATLAB Coder version            : 5.2
+// C/C++ source code generated on  : 03-Nov-2021 20:39:09
 //
 
 #ifndef BEV_IMAGE_H
@@ -17,14 +17,9 @@
 #include <cstdlib>
 
 // Function Declarations
-extern void BEV_image(const double Chassis[12], const double Sensor[11],
-                      const double Traffic[10], const double Lane[11],
-                      const double AEB_in[2],
-                      unsigned char b_BEV_image[367464]);
-
-void BEV_image_init();
-
-void just_one_check_not_empty_init();
+extern void BEV_image(const double Chassis[11], const double Traffic[288],
+                      const double Lane[10], double AEB_in,
+                      unsigned char bev_image[275598]);
 
 void out_Prob_ctrv_not_empty_init();
 

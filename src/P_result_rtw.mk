@@ -2,7 +2,7 @@
 ## Makefile generated for component 'P_result'. 
 ## 
 ## Makefile     : P_result_rtw.mk
-## Generated on : Wed Sep 01 20:36:26 2021
+## Generated on : Sat Nov 06 17:00:01 2021
 ## Final product: ./P_result.a
 ## Product type : static-library
 ## 
@@ -22,7 +22,7 @@ MAKEFILE                  = P_result_rtw.mk
 MATLAB_ROOT               = $(MATLAB_WORKSPACE)/C/Program_Files/MATLAB/R2021a
 MATLAB_BIN                = $(MATLAB_WORKSPACE)/C/Program_Files/MATLAB/R2021a/bin
 MATLAB_ARCH_BIN           = $(MATLAB_BIN)/win64
-START_DIR                 = $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library/codegen/lib/P_result
+START_DIR                 = $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev/codegen/lib/P_result
 TGT_FCN_LIB               = ISO_C++11
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0
@@ -155,7 +155,7 @@ BUILD_TYPE = "Static Library"
 ## INCLUDE PATHS
 ###########################################################################
 
-INCLUDES_BUILDINFO = -I$(START_DIR) -I$(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/include -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/sources/utils -I$(MATLAB_ROOT)/toolbox/coder/rtiostream/src/utils -I$(MATLAB_ROOT)/extern/include
+INCLUDES_BUILDINFO = -I$(START_DIR) -I$(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/include -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/sources/utils -I$(MATLAB_ROOT)/toolbox/coder/rtiostream/src/utils -I$(MATLAB_ROOT)/extern/include
 
 INCLUDES = $(INCLUDES_BUILDINFO)
 
@@ -322,15 +322,15 @@ $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS)
 	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-%.c.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library/%.c
+%.c.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev/%.c
 	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-%.s.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library/%.s
+%.s.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev/%.s
 	$(AS) $(ASFLAGS) -o "$@" "$<"
 
 
-%.cpp.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library/%.cpp
+%.cpp.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev/%.cpp
 	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 

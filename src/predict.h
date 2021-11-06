@@ -5,7 +5,7 @@
 // File: predict.h
 //
 // GPU Coder version                    : 2.1
-// CUDA/C/C++ source code generated on  : 01-Sep-2021 16:48:58
+// CUDA/C/C++ source code generated on  : 03-Nov-2021 17:28:26
 //
 
 #ifndef PREDICT_H
@@ -21,7 +21,7 @@ class aesnet0_0;
 // Function Declarations
 namespace coder {
 void DeepLearningNetwork_predict(aesnet0_0 *obj,
-                                 const unsigned char varargin_1[367464],
+                                 const unsigned char varargin_1[275598],
                                  float varargout_1[7]);
 
 }

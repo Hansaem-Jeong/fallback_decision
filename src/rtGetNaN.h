@@ -4,8 +4,8 @@
 // government, commercial, or other organizational use.
 // File: rtGetNaN.h
 //
-// GPU Coder version                    : 2.1
-// CUDA/C/C++ source code generated on  : 31-Aug-2021 16:30:47
+// MATLAB Coder version            : 5.2
+// C/C++ source code generated on  : 03-Nov-2021 20:39:09
 //
 
 #ifndef RTGETNAN_H

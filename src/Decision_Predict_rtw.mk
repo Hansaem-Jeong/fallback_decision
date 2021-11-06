@@ -2,7 +2,7 @@
 ## Makefile generated for component 'Decision_Predict'. 
 ## 
 ## Makefile     : Decision_Predict_rtw.mk
-## Generated on : Wed Sep 01 16:49:07 2021
+## Generated on : Wed Nov 03 17:28:33 2021
 ## Final product: ./Decision_Predict.a
 ## Product type : static-library
 ## 
@@ -22,7 +22,7 @@ MAKEFILE                  = Decision_Predict_rtw.mk
 MATLAB_ROOT               = $(MATLAB_WORKSPACE)/C/Program_Files/MATLAB/R2021a
 MATLAB_BIN                = $(MATLAB_WORKSPACE)/C/Program_Files/MATLAB/R2021a/bin
 MATLAB_ARCH_BIN           = $(MATLAB_BIN)/win64
-START_DIR                 = $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library/codegen/lib/Decision_Predict
+START_DIR                 = $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev/codegen/lib/Decision_Predict
 TGT_FCN_LIB               = ISO_C++11
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0
@@ -152,7 +152,7 @@ BUILD_TYPE = "Static Library"
 ## INCLUDE PATHS
 ###########################################################################
 
-INCLUDES_BUILDINFO = -I$(START_DIR) -I$(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/include -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/sources/utils -I$(MATLAB_ROOT)/toolbox/coder/rtiostream/src/utils -I$(MATLAB_ROOT)/extern/include
+INCLUDES_BUILDINFO = -I$(START_DIR) -I$(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/include -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/sources/utils -I$(MATLAB_ROOT)/toolbox/coder/rtiostream/src/utils -I$(MATLAB_ROOT)/extern/include
 
 INCLUDES = $(INCLUDES_BUILDINFO)
 
@@ -365,19 +365,19 @@ $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS)
 	$(CPP) $(CPPFLAGS) -o $@ $<
 
 
-%.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library/%.c
+%.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev/%.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 
-%.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library/%.c
+%.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev/%.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 
-%.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library/%.cpp
+%.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev/%.cpp
 	$(CPP) $(CPPFLAGS) -o $@ $<
 
 
-%.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library/%.cu
+%.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev/%.cu
 	$(CPP) $(CPPFLAGS) -o $@ $<
 
 

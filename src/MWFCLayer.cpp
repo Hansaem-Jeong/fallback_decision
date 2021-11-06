@@ -6,7 +6,6 @@
 #include "MWCNNLayer.hpp"
 #include "MWTargetNetworkImpl.hpp"
 
-
 // Create FullyConnectedLayer with corresponding InputSize and OutputSize.
 // This implementation uses SGEMV for m_BatchSize = 1 and SGEMM for others.
 void MWFCLayer::createFCLayer(MWTargetNetworkImpl* ntwk_impl,
@@ -24,7 +23,6 @@ void MWFCLayer::createFCLayer(MWTargetNetworkImpl* ntwk_impl,
 
     numInputFeatures = m_InputSize;
     numOutputFeatures = m_OutputSize;
-    
 
     m_impl =
         new MWFCLayerImpl(this, ntwk_impl, m_InputSize, m_OutputSize, m_weights_file, m_bias_file);

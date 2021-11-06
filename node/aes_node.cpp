@@ -1,29 +1,65 @@
 #include "ros/ros.h"
+#include <boost/bind.hpp>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 
-// msg
-#include "fallback_decision/aes_data.h"
-#include "fallback_decision/Chassis.h"
-#include "fallback_decision/Sensor.h"
-#include "fallback_decision/Traffic.h"
-#include "fallback_decision/Line.h"
-#include "fallback_decision/AEB.h"
+#include <message_filters/subscriber.h>
+#include <message_filters/time_synchronizer.h>
+#include <message_filters/sync_policies/approximate_time.h>
 
-// bev image header
+/*** message header ***/
+// chassis
+#include "chassis_msg/LOG_BYTE0.h"
+#include "chassis_msg/LOG_BYTE1.h"
+// track
+#include "autoware_msgs/DetectedObjectArray.h"
+// lane
+#include "mobileye_avante_msg/ME_Right_Lane_A.h"
+#include "mobileye_avante_msg/ME_Right_Lane_B.h"
+#include "mobileye_avante_msg/ME_Left_Lane_A.h"
+#include "mobileye_avante_msg/ME_Left_Lane_B.h"
+
+#include "chassis_msg/LOG_BYTE2.h"
+
+/*** bev image header ***/
+#include "coder_bounded_array.h"
+#include "CTRV_MODEL.h"
+#include "CV_MODEL.h"
+#include "det.h"
+#include "find.h"
+#include "HONDA.h"
+#include "I_lat.h"
+#include "inpolygon.h"
+#include "Interacting.h"
+#include "inv.h"
+#include "isequal.h"
+#include "linspace.h"
+#include "meshgrid.h"
+#include "minOrMax.h"
+#include "Mixing.h"
+#include "mrdivide_helper.h"
+#include "norm.h"
+#include "RSS_model.h"
+#include "rtwtypes.h"
+#include "sqrt.h"
+#include "sqrtm.h"
+#include "TLC.h"
+#include "xdhseqr.h"
+#include "xdlanv2.h"
+#include "xnrm2.h"
+#include "xrot.h"
+#include "xzlarf.h"
 #include "BEV_image.h"
-#include "MWCUSOLVERUtils.hpp"
 #include "BEV_image_data.h"
 #include "BEV_image_initialize.h"
 #include "BEV_image_terminate.h"
 #include "BEV_image_types.h"
-#include "MWCudaDimUtility.hpp"
-#include "MWLaunchParametersUtilities.hpp"
 #include "rtGetInf.h"
 #include "rtGetNaN.h"
 #include "rt_nonfinite.h"
 
-// predict header
+/*** predict header ***/
 #include "Decision_Predict_data.h"
 #include "Decision_Predict.h"
 #include "Decision_Predict_initialize.h"
@@ -53,111 +89,163 @@
 #include "MWTargetNetworkImpl.hpp"
 #include "MWTensorBase.hpp"
 
-// dicision header
+/*** dicision header ***/
 #include "P_result.h"
 
+/*** quat2eul header ***/
+#include "quat2eul_aes_data.h"
+#include "quat2eul_aes.h"
+#include "quat2eul_aes_initialize.h"
+#include "quat2eul_aes_terminate.h"
+#include "quat2eul_aes_types.h"
+#include "rt_defines.h"
 
-double chassis_[12];
-double sensor_[11];
-double traffic_[10];
-double line_[11];
-double aeb_[2];
-unsigned char outBEV[367464];
+using namespace message_filters;
+using namespace chassis_msg;
+using namespace autoware_msgs;
+using namespace mobileye_avante_msg;
+
+
+double chassis_[12] = {0, 0, 0, 0, 0, 0, 0, 2.19, 2.46, 4.85, 1.82};
+double track_[289];
+double line_[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1};
+double aeb_ = 1;
+unsigned char outBEV[275598];
 float outPredict[7];
 double outResult;
 
-void msgCopy(const fallback_decision::aes_data::ConstPtr& msg);
 
-void msgCallback(const fallback_decision::aes_data::ConstPtr& msg) {
-//    printf("in bev_image %lf\n", msg->chassis.timestamp);
-    const fallback_decision::aes_data::ConstPtr& msg_tmp=msg;
+void AES_Decision(void)
+{
     clock_t start_c, end_c, half_c;
     start_c = clock();
     end_c = half_c = 0;
 
-    msgCopy(msg_tmp); // function
-    
 //    printf("in bev_image %lf\n", chassis_[0]);
 
-    BEV_image(chassis_, sensor_, traffic_, line_, aeb_, outBEV);
+    BEV_image(chassis_+1, track_+1, line_+1, aeb_, outBEV);
     
 //    printf("in bev_image outBEV %d\n", outBEV[0]);
     half_c = clock();
-
+    
     Decision_Predict(outBEV, outPredict);
+//    printf("in predict outPredict %f\n", outPredict[0]);
 
     outResult = P_result(outPredict);
  
     end_c = clock();
 
-    printf("timestamp: %lf, Result: %lf, ",chassis_[0], outResult);
+    printf("Result: %lf, ", outResult);
     printf("CycleTime: %lf (bev: %lf, predictL %lf)\n",(double)(end_c-start_c)/CLOCKS_PER_SEC,(double)(half_c-start_c)/CLOCKS_PER_SEC,(double)(end_c-half_c)/CLOCKS_PER_SEC);
+
 }
 
+void AESCb(const LOG_BYTE0ConstPtr& byte0,
+           const LOG_BYTE1ConstPtr& byte1,
+           const ME_Left_Lane_AConstPtr& leftA,
+           const ME_Left_Lane_BConstPtr& leftB,
+           const ME_Right_Lane_AConstPtr& rightA,
+           const ME_Right_Lane_BConstPtr& rightB)
+           //const DetectedObjectArrayConstPtr& objectarr)
+
+{
+   // printf("sync success\n");
+// Chassis
+//    chassis_[0] = byte0->header.stamp.sec + byte0->header.stamp.nsec/1000000000.;
+//    printf("chassis time : %.3lf\n", chassis_[0]);
+    //printf("chassis time : %d.%d\n", byte0->header.stamp.sec, byte0->header.stamp.nsec);
+    chassis_[4] = ( byte0->WHL_SPD_RL + byte0->WHL_SPD_RR ) * 0.5;
+    chassis_[6] = chassis_[4];
+    chassis_[5] = byte1->LONG_ACCEL;
+
+// Lane
+    line_[3] = leftA->LaneMarkModelA_C2_Lh_ME;
+    line_[7] = leftA->LaneMarkPosition_C0_Lh_ME;
+    line_[1] = leftB->LaneMarkModelDerivA_C3_Lh_ME;
+    line_[5] = leftB->LaneMarkHeadingAngle_C1_Lh_ME;
+
+    line_[4] = rightA->LaneMarkModelA_C2_Rh_ME;
+    line_[8] = rightA->LaneMarkPosition_C0_Rh_ME;
+    line_[2] = rightB->LaneMarkModelDerivA_C3_Rh_ME;
+    line_[6] = rightB->LaneMarkHeadingAngle_C1_Rh_ME;
+
+// Track
+/*
+    memset(track_, 0, sizeof(track_));
+    for(int i = 0; i<1; ++i) {
+        printf("%lf\n", objectarr->objects[i].pose.position.x);
+
+    } 
+*/
+    AES_Decision();
+    
+}
+
+void objectCb(const DetectedObjectArrayConstPtr& objectarr)
+{
+// Track
+    memset(track_, 0, sizeof(track_));
+    if(objectarr->objects.size()) {
+        for(int i = 0; i<objectarr->objects.size(); ++i) {
+//            printf("%lf\n", objectarr->objects[i].pose.position.x);
+            double a = 0;
+            double b = 0;
+            //printf("object time : %d.%d\n", objectarr->header.stamp.sec, objectarr->header.stamp.nsec);
+            track_[1+(9*i)] = objectarr->objects[i].pose.position.x; 
+            track_[2+(9*i)] = objectarr->objects[i].pose.position.y; 
+            track_[3+(9*i)] = objectarr->objects[i].velocity.linear.x; 
+            track_[4+(9*i)] = objectarr->objects[i].velocity.linear.y; 
+     
+            track_[5+(9*i)] = 3; // yaw 
+            quat2eul_aes(objectarr->objects[i].pose.orientation.w,
+                         0, 0, objectarr->objects[i].pose.orientation.z,
+                         &track_[5+(9*i)], &a, &b); // yaw
+//            track_[4+(9*i)] = ; // yaw 
+            track_[8+(9*i)] = objectarr->objects[i].dimensions.x; // length
+            track_[9+(9*i)] = objectarr->objects[i].dimensions.y; // width
+            track_[6+(9*i)] = track_[8+(9*i)] * 0.5;
+            track_[7+(9*i)] = track_[6+(9*i)];
+/*
+            for(int j=0; j<9;++j) {
+                printf("%lf\n", track_[j+(9*i)]);
+            }
+            printf("\n");
+*/
+        } 
+    }
+
+}
 
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "bev_sub_node");
+    ros::init(argc, argv, "decision_node");
     ros::NodeHandle nh;
 
-    ros::Subscriber bev_sub = nh.subscribe("AES_data_pub", 1, msgCallback);
+    ros::Subscriber object_sub = nh.subscribe("/detection/lidar_objects_test", 1, objectCb);
 
+    message_filters::Subscriber<LOG_BYTE0> byte0_sub(nh, "LOG_BYTE0", 1);
+    message_filters::Subscriber<LOG_BYTE1> byte1_sub(nh, "LOG_BYTE1", 1);
+    message_filters::Subscriber<ME_Left_Lane_A> leftA_sub(nh, "ME_Left_Lane_A", 1);
+    message_filters::Subscriber<ME_Left_Lane_B> leftB_sub(nh, "ME_Left_Lane_B", 1);
+    message_filters::Subscriber<ME_Right_Lane_A> rightA_sub(nh, "ME_Right_Lane_A", 1);
+    message_filters::Subscriber<ME_Right_Lane_B> rightB_sub(nh, "ME_Right_Lane_B", 1);
+    //message_filters::Subscriber<DetectedObjectArray> object_sub(nh, "/detection/lidar_objects_test", 1);
+
+    //typedef sync_policies::ApproximateTime<LOG_BYTE0, LOG_BYTE1> SyncChassis;
+    typedef sync_policies::ApproximateTime<LOG_BYTE0, LOG_BYTE1,
+            ME_Left_Lane_A, ME_Left_Lane_B, ME_Right_Lane_A, ME_Right_Lane_B> SyncAES;
+            //DetectedObjectArray> SyncAES;
+    Synchronizer<SyncAES> sync(SyncAES(10), 
+                          byte0_sub, byte1_sub,
+                          leftA_sub, leftB_sub, rightA_sub, rightB_sub);
+                          //object_sub);
+    //sync.registerCallback(boost::bind(&chassisCb, _1, _2));
+    sync.registerCallback(boost::bind(&AESCb, _1, _2, _3, _4, _5, _6));
+
+    printf("\n");
     ros::spin();
 
     return 0;
 }
 
-void msgCopy(const fallback_decision::aes_data::ConstPtr& msg)
-{
-    chassis_[0] = msg->chassis.timestamp;
-    chassis_[1] = msg->chassis.invehicle_yaw;
-    chassis_[2] = msg->chassis.invehicle_gloposy;   
-    chassis_[3] = msg->chassis.invehicle_gloposx;   
-    chassis_[4] = msg->chassis.invehicle_velocity;  
-    chassis_[5] = msg->chassis.invehicle_gloaccx;   
-    chassis_[6] = msg->chassis.invehicle_glovelx;   
-    chassis_[7] = msg->chassis.invehicle_glovely;   
-    chassis_[8] = msg->chassis.invehicle_cg2rearbumper; 
-    chassis_[9] = msg->chassis.invehicle_cg2frontbumper;
-    chassis_[10] = msg->chassis.invehicle_length;
-    chassis_[11] = msg->chassis.invehicle_width;
-
-    sensor_[0] = msg->sensor.timestamp;
-    sensor_[1] = msg->sensor.camera_dtct;
-    sensor_[2] = msg->sensor.camera_relposy;
-    sensor_[3] = msg->sensor.camera_relposx;
-    sensor_[4] = msg->sensor.camera_relvely;
-    sensor_[5] = msg->sensor.camera_relvelx;
-    sensor_[6] = msg->sensor.frontradar_dtct;
-    sensor_[7] = msg->sensor.frontradar_relposy;
-    sensor_[8] = msg->sensor.frontradar_relposx;
-    sensor_[9] = msg->sensor.frontradar_relvely;
-    sensor_[10] = msg->sensor.frontradar_relvelx;
-
-    traffic_[0] = msg->traffic.timestamp;
-    traffic_[1] = msg->traffic.traffic_rv_gloposy;
-    traffic_[2] = msg->traffic.traffic_rv_gloposx;
-    traffic_[3] = msg->traffic.traffic_rv_headingangle;
-    traffic_[4] = msg->traffic.traffic_rv_glovelx;
-    traffic_[5] = msg->traffic.traffic_rv_glovely;
-    traffic_[6] = msg->traffic.traffic_rv_cg2rearbumper;
-    traffic_[7] = msg->traffic.traffic_rv_cg2frontbumper;
-    traffic_[8] = msg->traffic.traffic_rv_length;
-    traffic_[9] = msg->traffic.traffic_rv_width;
-
-    line_[0] = msg->line.timestamp;
-    line_[1] = msg->line.linepoly_a_l;
-    line_[2] = msg->line.linepoly_a_r;
-    line_[3] = msg->line.linepoly_b_l;
-    line_[4] = msg->line.linepoly_b_r;
-    line_[5] = msg->line.linepoly_c_l;
-    line_[6] = msg->line.linepoly_c_r;
-    line_[7] = msg->line.linepoly_d_l;
-    line_[8] = msg->line.linepoly_d_r;
-    line_[9] = msg->line.sensor_line_front_nline_left;
-    line_[10] = msg->line.sensor_line_front_nline_right;
-
-    aeb_[0] = msg->aeb.timestamp;
-    aeb_[1] = msg->aeb.linepoly_a_l;
-} 

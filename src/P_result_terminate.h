@@ -5,7 +5,7 @@
 // File: P_result_terminate.h
 //
 // MATLAB Coder version            : 5.2
-// C/C++ source code generated on  : 01-Sep-2021 20:42:36
+// C/C++ source code generated on  : 06-Nov-2021 17:00:00
 //
 
 #ifndef P_RESULT_TERMINATE_H

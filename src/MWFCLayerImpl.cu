@@ -4,7 +4,6 @@
 #include "MWTensorBase.hpp"
 #include "MWTensor.hpp"
 #include "MWTargetNetworkImpl.hpp"
-
  MWFCLayerImpl::MWFCLayerImpl(MWCNNLayer* layer, MWTargetNetworkImpl* 
 ntwk_impl, int XVcMnvCXvZpKICKIjgZi, int lsqeARVLtpJTWezgnTkg, const char* 
 xHViLEwTujGGrPZZgmbF,  const char* KCudOrFMfgCzUPMcdePX) : 

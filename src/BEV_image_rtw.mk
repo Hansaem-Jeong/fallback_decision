@@ -2,7 +2,7 @@
 ## Makefile generated for component 'BEV_image'. 
 ## 
 ## Makefile     : BEV_image_rtw.mk
-## Generated on : Tue Aug 31 12:47:19 2021
+## Generated on : Wed Nov 03 20:39:25 2021
 ## Final product: ./BEV_image.a
 ## Product type : static-library
 ## 
@@ -22,7 +22,7 @@ MAKEFILE                  = BEV_image_rtw.mk
 MATLAB_ROOT               = $(MATLAB_WORKSPACE)/C/Program_Files/MATLAB/R2021a
 MATLAB_BIN                = $(MATLAB_WORKSPACE)/C/Program_Files/MATLAB/R2021a/bin
 MATLAB_ARCH_BIN           = $(MATLAB_BIN)/win64
-START_DIR                 = $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library/codegen/lib/BEV_image
+START_DIR                 = $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev/codegen/lib/BEV_image
 TGT_FCN_LIB               = ISO_C++11
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0
@@ -36,7 +36,7 @@ MODELLIB                  = BEV_image.a
 ## TOOLCHAIN SPECIFICATIONS
 ###########################################################################
 
-# Toolchain Name:          NVCC for NVIDIA Embedded Processors
+# Toolchain Name:          GNU GCC for NVIDIA Embedded Processors
 # Supported Version(s):    
 # ToolchainInfo Version:   2021a
 # Specification Revision:  1.0
@@ -48,34 +48,37 @@ MODELLIB                  = BEV_image.a
 
 CCOUTPUTFLAG  = --output_file=
 LDOUTPUTFLAG  = --output_file=
-XCOMPILERFLAG = -Xcompiler
+XCOMPILERFLAG =  
 
 TOOLCHAIN_SRCS = 
 TOOLCHAIN_INCS = 
-TOOLCHAIN_LIBS = -lm -lm
+TOOLCHAIN_LIBS = -lm -lm -lstdc++
 
 #------------------------
 # BUILD TOOL COMMANDS
 #------------------------
 
-# C Compiler: NVCC for NVIDIA Embedded Processors1.0 NVIDIA CUDA C Compiler Driver
-CC = nvcc
+# Assembler: GNU GCC for NVIDIA Embedded Processors Assembler
+AS = as
 
-# Linker: NVCC for NVIDIA Embedded Processors1.0 NVIDIA CUDA C Linker
-LD = nvcc
+# C Compiler: GNU GCC for NVIDIA Embedded Processors C Compiler
+CC = gcc
 
-# C++ Compiler: NVCC for NVIDIA Embedded Processors1.0 NVIDIA CUDA C++ Compiler Driver
-CPP = nvcc
+# Linker: GNU GCC for NVIDIA Embedded Processors Linker
+LD = gcc
 
-# C++ Linker: NVCC for NVIDIA Embedded Processors1.0 NVIDIA CUDA C++ Linker
-CPP_LD = nvcc
+# C++ Compiler: GNU GCC for NVIDIA Embedded Processors C++ Compiler
+CPP = g++
 
-# Archiver: NVCC for NVIDIA Embedded Processors1.0 Archiver
+# C++ Linker: GNU GCC for NVIDIA Embedded Processors C++ Linker
+CPP_LD = g++
+
+# Archiver: GNU GCC for NVIDIA Embedded Processors Archiver
 AR = ar
 
 # MEX Tool: MEX Tool
 MEX_PATH = $(MATLAB_ARCH_BIN)
-MEX = $(MEX_PATH)/mex
+MEX = "$(MEX_PATH)/mex"
 
 # Download: Download
 DOWNLOAD =
@@ -91,13 +94,15 @@ MAKE = make
 # Directives/Utilities
 #-------------------------
 
-CDEBUG              = -g -G
+ASDEBUG             = -g
+AS_OUTPUT_FLAG      = -o
+CDEBUG              = -g
 C_OUTPUT_FLAG       = -o
-LDDEBUG             = -g -G
+LDDEBUG             = -g
 OUTPUT_FLAG         = -o
-CPPDEBUG            = -g -G
+CPPDEBUG            = -g
 CPP_OUTPUT_FLAG     = -o
-CPPLDDEBUG          = -g -G
+CPPLDDEBUG          = -g
 OUTPUT_FLAG         = -o
 ARDEBUG             =
 STATICLIB_OUTPUT_FLAG =
@@ -111,32 +116,30 @@ RUN                 =
 # "Faster Runs" Build Configuration
 #--------------------------------------
 
-ARFLAGS              = -ruvs
-CFLAGS               = -rdc=true -Xcudafe "--diag_suppress=unsigned_compare_with_zero" \
-                       -c \
-                       -Xcompiler -MMD,-MP \
+ARFLAGS              = -r
+ASFLAGS              = -c \
+                       $(ASFLAGS_ADDITIONAL) \
+                       $(INCLUDES)
+CFLAGS               = -c \
+                       -MMD -MP -MF"$(@:%.o=%.dep)" -MT"$@"  \
                        -O2
-CPPFLAGS             = -rdc=true -Xcudafe "--diag_suppress=unsigned_compare_with_zero" \
-                       -c \
-                       -Xcompiler -MMD,-MP \
+CPPFLAGS             = -c \
+                       -MMD -MP -MF"$(@:%.o=%.dep)" -MT"$@"  \
+                       -fpermissive  \
                        -O2
-CPP_LDFLAGS          = -lm -lrt -ldl \
-                       -Xlinker -rpath,/usr/lib32 -Xnvlink -w -lcudart -lcuda -Wno-deprecated-gpu-targets
+CPP_LDFLAGS          = -lrt -pthread -ldl
 CPP_SHAREDLIB_LDFLAGS  = -shared  \
-                         -lm -lrt -ldl \
-                         -Xlinker -rpath,/usr/lib32 -Xnvlink -w -lcudart -lcuda -Wno-deprecated-gpu-targets
+                         -lrt -pthread -ldl
 DOWNLOAD_FLAGS       =
 EXECUTE_FLAGS        =
-LDFLAGS              = -lm -lrt -ldl \
-                       -Xlinker -rpath,/usr/lib32 -Xnvlink -w -lcudart -lcuda -Wno-deprecated-gpu-targets
+LDFLAGS              = -lrt -pthread -ldl
 MEX_CPPFLAGS         =
 MEX_CPPLDFLAGS       =
 MEX_CFLAGS           =
 MEX_LDFLAGS          =
 MAKE_FLAGS           = -f $(MAKEFILE)
 SHAREDLIB_LDFLAGS    = -shared  \
-                       -lm -lrt -ldl \
-                       -Xlinker -rpath,/usr/lib32 -Xnvlink -w -lcudart -lcuda -Wno-deprecated-gpu-targets
+                       -lrt -pthread -ldl
 
 
 
@@ -152,7 +155,7 @@ BUILD_TYPE = "Static Library"
 ## INCLUDE PATHS
 ###########################################################################
 
-INCLUDES_BUILDINFO = -I$(START_DIR) -I$(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/include -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/sources/utils -I$(MATLAB_ROOT)/toolbox/coder/rtiostream/src/utils -I$(MATLAB_ROOT)/extern/include
+INCLUDES_BUILDINFO = -I$(START_DIR) -I$(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/include -I$(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/sources/utils -I$(MATLAB_ROOT)/toolbox/coder/rtiostream/src/utils -I$(MATLAB_ROOT)/extern/include
 
 INCLUDES = $(INCLUDES_BUILDINFO)
 
@@ -160,7 +163,7 @@ INCLUDES = $(INCLUDES_BUILDINFO)
 ## DEFINES
 ###########################################################################
 
-DEFINES_ = -DMW_CUDA_ARCH=720 -D__MW_TARGET_USE_HARDWARE_RESOURCES_H__ -DMW_DL_DATA_PATH="$(START_DIR)" -DMW_SCHED_OTHER=1
+DEFINES_ = -D__MW_TARGET_USE_HARDWARE_RESOURCES_H__ -DMW_DL_DATA_PATH="$(START_DIR)" -DMW_SCHED_OTHER=1
 DEFINES_CUSTOM = 
 DEFINES_SKIPFORSIL = -D__linux__ -DARM_PROJECT -D_USE_TARGET_UDP_ -D_RUNONTARGETHARDWARE_BUILD_ -DSTACK_SIZE=200000
 DEFINES_STANDARD = -DMODEL=BEV_image
@@ -171,7 +174,7 @@ DEFINES = $(DEFINES_) $(DEFINES_CUSTOM) $(DEFINES_SKIPFORSIL) $(DEFINES_STANDARD
 ## SOURCE FILES
 ###########################################################################
 
-SRCS = $(START_DIR)/MWCUSOLVERUtils.cpp $(START_DIR)/BEV_image_data.cu $(START_DIR)/rt_nonfinite.cu $(START_DIR)/rtGetNaN.cu $(START_DIR)/rtGetInf.cu $(START_DIR)/BEV_image_initialize.cu $(START_DIR)/BEV_image_terminate.cu $(START_DIR)/BEV_image.cu $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/sources/utils/MW_nvidia_init.c
+SRCS = $(START_DIR)/BEV_image_data.cpp $(START_DIR)/rt_nonfinite.cpp $(START_DIR)/rtGetNaN.cpp $(START_DIR)/rtGetInf.cpp $(START_DIR)/BEV_image_initialize.cpp $(START_DIR)/BEV_image_terminate.cpp $(START_DIR)/BEV_image.cpp $(START_DIR)/norm.cpp $(START_DIR)/Interacting.cpp $(START_DIR)/sqrtm.cpp $(START_DIR)/xnrm2.cpp $(START_DIR)/mrdivide_helper.cpp $(START_DIR)/det.cpp $(START_DIR)/inv.cpp $(START_DIR)/Mixing.cpp $(START_DIR)/TLC.cpp $(START_DIR)/I_lat.cpp $(START_DIR)/RSS_model.cpp $(START_DIR)/HONDA.cpp $(START_DIR)/minOrMax.cpp $(START_DIR)/meshgrid.cpp $(START_DIR)/isequal.cpp $(START_DIR)/inpolygon.cpp $(START_DIR)/find.cpp $(START_DIR)/linspace.cpp $(START_DIR)/CTRV_MODEL.cpp $(START_DIR)/xzlarf.cpp $(START_DIR)/xdhseqr.cpp $(START_DIR)/xdlanv2.cpp $(START_DIR)/xrot.cpp $(START_DIR)/sqrt.cpp $(START_DIR)/CV_MODEL.cpp $(START_DIR)/BEV_image_rtwutil.cpp $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/sources/utils/MW_nvidia_init.c
 
 ALL_SRCS = $(SRCS)
 
@@ -179,7 +182,7 @@ ALL_SRCS = $(SRCS)
 ## OBJECTS
 ###########################################################################
 
-OBJS = MWCUSOLVERUtils.o BEV_image_data.o rt_nonfinite.o rtGetNaN.o rtGetInf.o BEV_image_initialize.o BEV_image_terminate.o BEV_image.o MW_nvidia_init.o
+OBJS = BEV_image_data.cpp.o rt_nonfinite.cpp.o rtGetNaN.cpp.o rtGetInf.cpp.o BEV_image_initialize.cpp.o BEV_image_terminate.cpp.o BEV_image.cpp.o norm.cpp.o Interacting.cpp.o sqrtm.cpp.o xnrm2.cpp.o mrdivide_helper.cpp.o det.cpp.o inv.cpp.o Mixing.cpp.o TLC.cpp.o I_lat.cpp.o RSS_model.cpp.o HONDA.cpp.o minOrMax.cpp.o meshgrid.cpp.o isequal.cpp.o inpolygon.cpp.o find.cpp.o linspace.cpp.o CTRV_MODEL.cpp.o xzlarf.cpp.o xdhseqr.cpp.o xdlanv2.cpp.o xrot.cpp.o sqrt.cpp.o CV_MODEL.cpp.o BEV_image_rtwutil.cpp.o MW_nvidia_init.c.o
 
 ALL_OBJS = $(OBJS)
 
@@ -199,7 +202,7 @@ LIBS =
 ## SYSTEM LIBRARIES
 ###########################################################################
 
-SYSTEM_LIBS = $(LDFLAGS_CUSTOMLIBFLAGS) -lm -lstdc++ -lcufft -lcublas -lcusolver
+SYSTEM_LIBS = $(LDFLAGS_CUSTOMLIBFLAGS) -lm -lstdc++
 
 ###########################################################################
 ## ADDITIONAL TOOLCHAIN FLAGS
@@ -209,51 +212,17 @@ SYSTEM_LIBS = $(LDFLAGS_CUSTOMLIBFLAGS) -lm -lstdc++ -lcufft -lcublas -lcusolver
 # C Compiler
 #---------------
 
-CFLAGS_CU_OPTS = -arch sm_72 
 CFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
-CFLAGS += $(CFLAGS_CU_OPTS) $(CFLAGS_BASIC)
+CFLAGS += $(CFLAGS_BASIC)
 
 #-----------------
 # C++ Compiler
 #-----------------
 
-CPPFLAGS_CU_OPTS = -arch sm_72 
 CPPFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
-CPPFLAGS += $(CPPFLAGS_CU_OPTS) $(CPPFLAGS_BASIC)
-
-#---------------
-# C++ Linker
-#---------------
-
-CPP_LDFLAGS_ = -arch sm_72 
-
-CPP_LDFLAGS += $(CPP_LDFLAGS_)
-
-#------------------------------
-# C++ Shared Library Linker
-#------------------------------
-
-CPP_SHAREDLIB_LDFLAGS_ = -arch sm_72 
-
-CPP_SHAREDLIB_LDFLAGS += $(CPP_SHAREDLIB_LDFLAGS_)
-
-#-----------
-# Linker
-#-----------
-
-LDFLAGS_ = -arch sm_72 
-
-LDFLAGS += $(LDFLAGS_)
-
-#--------------------------
-# Shared Library Linker
-#--------------------------
-
-SHAREDLIB_LDFLAGS_ = -arch sm_72 
-
-SHAREDLIB_LDFLAGS += $(SHAREDLIB_LDFLAGS_)
+CPPFLAGS += $(CPPFLAGS_BASIC)
 
 ###########################################################################
 ## INLINED COMMANDS
@@ -317,104 +286,188 @@ $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS)
 # SOURCE-TO-OBJECT
 #---------------------
 
-%.o : %.c
-	$(CC) $(CFLAGS) -o $@ $<
+%.c.o : %.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-%.o : %.c
-	$(CC) $(CFLAGS) -o $@ $<
+%.s.o : %.s
+	$(AS) $(ASFLAGS) -o "$@" "$<"
 
 
-%.o : %.cpp
-	$(CPP) $(CPPFLAGS) -o $@ $<
+%.cpp.o : %.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-%.o : %.cu
-	$(CPP) $(CPPFLAGS) -o $@ $<
+%.c.o : $(RELATIVE_PATH_TO_ANCHOR)/%.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.c
-	$(CC) $(CFLAGS) -o $@ $<
+%.s.o : $(RELATIVE_PATH_TO_ANCHOR)/%.s
+	$(AS) $(ASFLAGS) -o "$@" "$<"
 
 
-%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.c
-	$(CC) $(CFLAGS) -o $@ $<
+%.cpp.o : $(RELATIVE_PATH_TO_ANCHOR)/%.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.cpp
-	$(CPP) $(CPPFLAGS) -o $@ $<
+%.c.o : $(START_DIR)/%.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.cu
-	$(CPP) $(CPPFLAGS) -o $@ $<
+%.s.o : $(START_DIR)/%.s
+	$(AS) $(ASFLAGS) -o "$@" "$<"
 
 
-%.o : $(START_DIR)/%.c
-	$(CC) $(CFLAGS) -o $@ $<
+%.cpp.o : $(START_DIR)/%.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-%.o : $(START_DIR)/%.c
-	$(CC) $(CFLAGS) -o $@ $<
+%.c.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev/%.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-%.o : $(START_DIR)/%.cpp
-	$(CPP) $(CPPFLAGS) -o $@ $<
+%.s.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev/%.s
+	$(AS) $(ASFLAGS) -o "$@" "$<"
 
 
-%.o : $(START_DIR)/%.cu
-	$(CPP) $(CPPFLAGS) -o $@ $<
+%.cpp.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/Fallback_decision_code_rev/%.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-%.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library/%.c
-	$(CC) $(CFLAGS) -o $@ $<
+BEV_image_data.cpp.o : $(START_DIR)/BEV_image_data.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-%.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library/%.c
-	$(CC) $(CFLAGS) -o $@ $<
+rt_nonfinite.cpp.o : $(START_DIR)/rt_nonfinite.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-%.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library/%.cpp
-	$(CPP) $(CPPFLAGS) -o $@ $<
+rtGetNaN.cpp.o : $(START_DIR)/rtGetNaN.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-%.o : $(MATLAB_WORKSPACE)/C/Users/AVEES/Documents/MATLAB/11_fallback_decision_library/%.cu
-	$(CPP) $(CPPFLAGS) -o $@ $<
+rtGetInf.cpp.o : $(START_DIR)/rtGetInf.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-MWCUSOLVERUtils.o : $(START_DIR)/MWCUSOLVERUtils.cpp
-	$(CPP) $(CPPFLAGS) -o $@ $<
+BEV_image_initialize.cpp.o : $(START_DIR)/BEV_image_initialize.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-BEV_image_data.o : $(START_DIR)/BEV_image_data.cu
-	$(CPP) $(CPPFLAGS) -o $@ $<
+BEV_image_terminate.cpp.o : $(START_DIR)/BEV_image_terminate.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-rt_nonfinite.o : $(START_DIR)/rt_nonfinite.cu
-	$(CPP) $(CPPFLAGS) -o $@ $<
+BEV_image.cpp.o : $(START_DIR)/BEV_image.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-rtGetNaN.o : $(START_DIR)/rtGetNaN.cu
-	$(CPP) $(CPPFLAGS) -o $@ $<
+norm.cpp.o : $(START_DIR)/norm.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-rtGetInf.o : $(START_DIR)/rtGetInf.cu
-	$(CPP) $(CPPFLAGS) -o $@ $<
+Interacting.cpp.o : $(START_DIR)/Interacting.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-BEV_image_initialize.o : $(START_DIR)/BEV_image_initialize.cu
-	$(CPP) $(CPPFLAGS) -o $@ $<
+sqrtm.cpp.o : $(START_DIR)/sqrtm.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-BEV_image_terminate.o : $(START_DIR)/BEV_image_terminate.cu
-	$(CPP) $(CPPFLAGS) -o $@ $<
+xnrm2.cpp.o : $(START_DIR)/xnrm2.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-BEV_image.o : $(START_DIR)/BEV_image.cu
-	$(CPP) $(CPPFLAGS) -o $@ $<
+mrdivide_helper.cpp.o : $(START_DIR)/mrdivide_helper.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-MW_nvidia_init.o : $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/sources/utils/MW_nvidia_init.c
-	$(CC) $(CFLAGS) -o $@ $<
+det.cpp.o : $(START_DIR)/det.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+inv.cpp.o : $(START_DIR)/inv.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+Mixing.cpp.o : $(START_DIR)/Mixing.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+TLC.cpp.o : $(START_DIR)/TLC.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+I_lat.cpp.o : $(START_DIR)/I_lat.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+RSS_model.cpp.o : $(START_DIR)/RSS_model.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+HONDA.cpp.o : $(START_DIR)/HONDA.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+minOrMax.cpp.o : $(START_DIR)/minOrMax.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+meshgrid.cpp.o : $(START_DIR)/meshgrid.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+isequal.cpp.o : $(START_DIR)/isequal.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+inpolygon.cpp.o : $(START_DIR)/inpolygon.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+find.cpp.o : $(START_DIR)/find.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+linspace.cpp.o : $(START_DIR)/linspace.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+CTRV_MODEL.cpp.o : $(START_DIR)/CTRV_MODEL.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+xzlarf.cpp.o : $(START_DIR)/xzlarf.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+xdhseqr.cpp.o : $(START_DIR)/xdhseqr.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+xdlanv2.cpp.o : $(START_DIR)/xdlanv2.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+xrot.cpp.o : $(START_DIR)/xrot.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+sqrt.cpp.o : $(START_DIR)/sqrt.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+CV_MODEL.cpp.o : $(START_DIR)/CV_MODEL.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+BEV_image_rtwutil.cpp.o : $(START_DIR)/BEV_image_rtwutil.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+MW_nvidia_init.c.o : $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/sources/utils/MW_nvidia_init.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
 ###########################################################################
@@ -440,6 +493,7 @@ info :
 	echo "### MODELREF_LIBS = $(MODELREF_LIBS)"
 	echo "### SYSTEM_LIBS = $(SYSTEM_LIBS)"
 	echo "### TOOLCHAIN_LIBS = $(TOOLCHAIN_LIBS)"
+	echo "### ASFLAGS = $(ASFLAGS)"
 	echo "### CFLAGS = $(CFLAGS)"
 	echo "### LDFLAGS = $(LDFLAGS)"
 	echo "### SHAREDLIB_LDFLAGS = $(SHAREDLIB_LDFLAGS)"
@@ -461,7 +515,7 @@ clean :
 	$(RM) $(PRODUCT)
 	$(RM) $(ALL_OBJS)
 	$(RM) *.c.dep
-	$(RM) *.cpp.dep .cu.dep
+	$(RM) *.cpp.dep
 	$(ECHO) "### Deleted all derived files."
 
 

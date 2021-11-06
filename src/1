@@ -1,0 +1,20 @@
+#include <stdio.h>
+#include "quat2eul_aes.h"
+
+int main(void)
+{
+    double a = 1;
+    double b = 0;
+    double c = 0;
+    double d = 1;
+
+    double r = 0;
+    double p = 0;
+    double y = 0;
+
+    quat2eul_aes(a, b, c, d, &y, &r, &p);
+
+    printf("YAW : %lf\n", y);
+
+    return 0;
+}
