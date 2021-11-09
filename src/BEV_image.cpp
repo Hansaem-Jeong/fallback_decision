@@ -9,6 +9,12 @@
 //
 
 // Include Files
+
+// aes
+#include <time.h>
+#include <stdio.h>
+//#include <omp.h>
+
 #include "BEV_image.h"
 #include "BEV_image_data.h"
 #include "BEV_image_initialize.h"
@@ -30,6 +36,12 @@
 #include "rt_nonfinite.h"
 #include <algorithm>
 #include <cmath>
+
+//aes
+double start_bev;
+double start_bev2;
+double start_bev3;
+double start_bev4;
 
 // Variable Definitions
 static double State[80640];
@@ -1491,7 +1503,7 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
   int b_i;
   int i;
   int jj_size;
-  int track_number;
+  volatile int track_number;
   unsigned char u11;
   unsigned char u13;
   unsigned char u15;
@@ -1740,6 +1752,13 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
   //  ESS X
   //  ESS Y
   //  ACC Y
+
+//aes
+//  #pragma omp parallel for 
+//  for(int i = 0; i<10; ++i) {
+//    printf("i %d\n", i);
+//  }
+
   for (i = 0; i < 10; i++) {
     t = (static_cast<double>(i) + 1.0) * 0.2;
     // ESL
@@ -1769,6 +1788,7 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
   }
   //  DEC Y
   // flag=coder.nullcopy(zeros(32,1));
+// aes
   x_ini[4] = 0.0;
   for (track_number = 0; track_number < 32; track_number++) {
     d = Training_data_data[28 * track_number + 5];
@@ -1973,10 +1993,19 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
   Distance_to_Leftlane = coder::internal::b_minimum(b_varargin_1);
   Distance_to_Rightlane = coder::internal::b_maximum(b_varargin_1);
   coder::meshgrid(varargin_1, b_varargin_1, Rx, Ry);
-  for (int image_index{0}; image_index < 90; image_index++) {
+// aes
+  start_bev = clock();
+
+  #pragma omp parallel num_threads(4)
+  #pragma omp parallel for
+  for (int image_index = 0; image_index < 90; image_index++) {
     int b_image_index;
     b_image_index = image_index;
+    start_bev2 = clock();
+
     for (track_number = 0; track_number < 32; track_number++) {
+//aes
+      //printf("track_number %d\n", track_number);
       b_i = b_image_index + 2520 * track_number;
       d = State[b_i + 450];
       if (d != 0.0) {
@@ -1990,6 +2019,8 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
           //                  Heading_Angle = Tmp_State(Data_Backward_index -
           //                  image_index + 1, 5);
           b_image_index = 89;
+          //aes
+          start_bev3 = clock();
           for (DEC_param = 0; DEC_param < 90; DEC_param++) {
             b_image_index = 89 - DEC_param;
             b_i = DEC_param + 2520 * track_number;
@@ -2069,6 +2100,8 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
               }
             }
           }
+          //printf("bev_image 3 : %lf\n", (double)(clock()-start_bev3)/CLOCKS_PER_SEC);
+          start_bev4 = clock();
           if (!coder::isequal(empty_black_image, bev_image)) {
             //  && track_number == 1
             for (v_e = 0.0; v_e < Lane[8]; v_e++) {
@@ -2139,6 +2172,7 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
             //                          BEV_Window_out(:,:,23) =
             //                          BEV_Window_out(:,:,2);
           }
+          //printf("bev_image4 : %lf\n", (double)(clock()-start_bev4)/CLOCKS_PER_SEC);
           if (!coder::isequal(empty_black_image, bev_image)) {
             // && track_number == Traffic_Number
             tmp_target_x[0] = 0.0;
@@ -2717,7 +2751,9 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
         }
       }
     }
+    //printf("bev_image 2 : %lf\n", (double)(clock()-start_bev2)/CLOCKS_PER_SEC);
   }
+  printf("bev_image : %lf\n", (double)(clock()-start_bev)/CLOCKS_PER_SEC);
   // BEV_image=uint8(BEV_Window_out);
 }
 

@@ -37,6 +37,15 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 find_package(Boost REQUIRED COMPONENTS thread)
+find_package(OpenMP REQUIRED)
+if(OPENMP_FOUND)
+  message (STATUS "OPENMP FOUND")
+#  set(OpenMP_FLAGS ${OpenMP_CXX_FLAGS}) 
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+  set(OpenMP_LIBS gomp)
+endif()
+
 
 add_message_files(
   FILES
@@ -76,6 +85,7 @@ catkin_package(
     message_runtime
   DEPENDS 
     Boost
+    OpenMP
     system_lib
 )
 
@@ -197,9 +207,13 @@ else()
   )
 
 endif()
+
+target_compile_options(${PROJECT_NAME} PUBLIC ${OpenMP_FLAGS})
+
 target_link_libraries(${PROJECT_NAME}_lib
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
+  ${OpenMP_LIBS}
 )
 
 target_link_libraries(${PROJECT_NAME}

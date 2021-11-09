@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+//#include <omp.h>
 
 #include <message_filters/subscriber.h>
 #include <message_filters/time_synchronizer.h>
@@ -117,6 +118,7 @@ double outResult;
 
 void AES_Decision(void)
 {
+
     clock_t start_c, end_c, half_c;
     start_c = clock();
     end_c = half_c = 0;
@@ -137,6 +139,11 @@ void AES_Decision(void)
 
     printf("Result: %lf, ", outResult);
     printf("CycleTime: %lf (bev: %lf, predictL %lf)\n",(double)(end_c-start_c)/CLOCKS_PER_SEC,(double)(half_c-start_c)/CLOCKS_PER_SEC,(double)(end_c-half_c)/CLOCKS_PER_SEC);
+
+//    #pragma omp parallel for
+//   for(int i=0; i<=10;++i) {
+//       printf("i %d\n", i);
+//    }
 
 }
 
@@ -186,6 +193,7 @@ void objectCb(const DetectedObjectArrayConstPtr& objectarr)
 // Track
     memset(track_, 0, sizeof(track_));
     if(objectarr->objects.size()) {
+        printf("object size : %d\n", objectarr->objects.size());
         for(int i = 0; i<objectarr->objects.size(); ++i) {
 //            printf("%lf\n", objectarr->objects[i].pose.position.x);
             double a = 0;
