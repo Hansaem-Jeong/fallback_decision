@@ -121,7 +121,7 @@ set(PROJECT_LIB_FILES
   src/CV_MODEL.cpp
   src/det.cpp
   src/find.cpp
-  src/HONDA.cpp
+#  src/HONDA.cpp
   src/I_lat.cpp
   src/inpolygon.cpp
   src/Interacting.cpp
@@ -140,6 +140,7 @@ set(PROJECT_LIB_FILES
   src/sqrt.cpp
   src/sqrtm.cpp
   src/TLC.cpp
+  src/tmp_SBEV.cpp
   src/xdhseqr.cpp
   src/xdlanv2.cpp
   src/xnrm2.cpp

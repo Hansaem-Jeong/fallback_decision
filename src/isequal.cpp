@@ -5,7 +5,7 @@
 // File: isequal.cpp
 //
 // MATLAB Coder version            : 5.2
-// C/C++ source code generated on  : 03-Nov-2021 20:39:09
+// C/C++ source code generated on  : 09-Nov-2021 00:41:02
 //
 
 // Include Files
@@ -14,12 +14,12 @@
 
 // Function Definitions
 //
-// Arguments    : const double varargin_1[275598]
+// Arguments    : const unsigned char varargin_1[275598]
 //                const unsigned char varargin_2[275598]
 // Return Type  : bool
 //
 namespace coder {
-bool isequal(const double varargin_1[275598],
+bool isequal(const unsigned char varargin_1[275598],
              const unsigned char varargin_2[275598])
 {
   int k;
@@ -31,7 +31,7 @@ bool isequal(const double varargin_1[275598],
   k = 0;
   exitg1 = false;
   while ((!exitg1) && (k < 275598)) {
-    if (!(varargin_1[k] == varargin_2[k])) {
+    if (varargin_1[k] != varargin_2[k]) {
       b_p = false;
       exitg1 = true;
     } else {

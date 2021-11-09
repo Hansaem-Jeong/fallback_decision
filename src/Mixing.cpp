@@ -5,7 +5,7 @@
 // File: Mixing.cpp
 //
 // MATLAB Coder version            : 5.2
-// C/C++ source code generated on  : 03-Nov-2021 20:39:09
+// C/C++ source code generated on  : 09-Nov-2021 00:41:02
 //
 
 // Include Files
@@ -13,14 +13,6 @@
 #include "rt_nonfinite.h"
 
 // Function Definitions
-//
-// if time >= 180
-//      time = time;
-//  end
-//
-//  if time >= 240
-//      time = time;
-//  end
 //
 // Arguments    : double c_ctrv
 //                const double x_ctrv[5]
@@ -51,6 +43,13 @@ void Mixing(double c_ctrv, const double x_ctrv[5], const double P_ctrv[25],
   int b_i;
   int i;
   int i1;
+  //  if time >= 180
+  //      time = time;
+  //  end
+  //
+  //  if time >= 240
+  //      time = time;
+  //  end
   //  x_k = [y x yaw v yawrate]';
   // -------------------------------------------------------------------------
   //  Parameter

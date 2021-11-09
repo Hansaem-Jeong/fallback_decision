@@ -5,7 +5,7 @@
 // File: CV_MODEL.cpp
 //
 // MATLAB Coder version            : 5.2
-// C/C++ source code generated on  : 03-Nov-2021 20:39:09
+// C/C++ source code generated on  : 09-Nov-2021 00:41:02
 //
 
 // Include Files
@@ -20,13 +20,6 @@
 #include <cstring>
 
 // Function Definitions
-//
-// if time >=18.49
-//      time = time;
-//  end
-//  x_k = [y x yaw v yawrate]';
-// -------------------------------------------------------------------------
-//  Parameter
 //
 // Arguments    : const double x_cv_k[5]
 //                const double P_cv_k[25]
@@ -66,6 +59,12 @@ double CV_MODEL(const double x_cv_k[5], const double P_cv_k[25],
   int b_i;
   int i;
   int i1;
+  //  if time >=18.49
+  //      time = time;
+  //  end
+  //  x_k = [y x yaw v yawrate]';
+  // -------------------------------------------------------------------------
+  //  Parameter
   //  L = real(sqrtm((n_x+KAPPA)*P_cv_k));
   for (i = 0; i < 25; i++) {
     L[i] = 10.0 * P_cv_k[i];

@@ -5,7 +5,7 @@
 // File: CTRV_MODEL.cpp
 //
 // MATLAB Coder version            : 5.2
-// C/C++ source code generated on  : 03-Nov-2021 20:39:09
+// C/C++ source code generated on  : 09-Nov-2021 00:41:02
 //
 
 // Include Files
@@ -20,14 +20,6 @@
 #include <cstring>
 
 // Function Definitions
-//
-// if time >=18.49
-//      time = time;
-//  end
-//  x_k = [y x yaw v yawrate]';
-// -------------------------------------------------------------------------
-//  Parameter
-//  ts = 0.01;
 //
 // Arguments    : const double x_ctrv_k[5]
 //                const double P_ctrv_k[25]
@@ -68,6 +60,13 @@ double CTRV_MODEL(const double x_ctrv_k[5], const double P_ctrv_k[25],
   int b_i;
   int i;
   int i1;
+  //  if time >=18.49
+  //      time = time;
+  //  end
+  //  x_k = [y x yaw v yawrate]';
+  // -------------------------------------------------------------------------
+  //  Parameter
+  //  ts = 0.01;
   for (i = 0; i < 25; i++) {
     L[i] = 10.0 * P_ctrv_k[i];
   }
