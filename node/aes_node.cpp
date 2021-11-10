@@ -101,10 +101,15 @@
 #include "quat2eul_aes_types.h"
 #include "rt_defines.h"
 
+//magick
+#include "Magick++.h"
+#include "matlab_array2magick.h"
+
 using namespace message_filters;
 using namespace chassis_msg;
 using namespace autoware_msgs;
 using namespace mobileye_avante_msg;
+using namespace Magick;
 
 
 double chassis_[12] = {0, 0, 0, 0, 0, 0, 0, 2.19, 2.46, 4.85, 1.82};
@@ -112,8 +117,11 @@ double track_[289];
 double line_[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1};
 double aeb_ = 1;
 unsigned char outBEV[275598];
+unsigned char img[275598];
 float outPredict[7];
 double outResult;
+//unsigned char pix [] = {200,200,200,100,100,100,0,0,0,255,0,0,0,255,0,0,0,255};
+static long int idx;
 
 
 void AES_Decision(void)
@@ -125,7 +133,7 @@ void AES_Decision(void)
 
 //    printf("in bev_image %lf\n", chassis_[0]);
 
-    BEV_image(chassis_+1, track_+1, line_+1, aeb_, outBEV);
+    BEV_image(chassis_+1, track_+1, line_+1, aeb_, outBEV, img);
     
 //    printf("in bev_image outBEV %d\n", outBEV[0]);
     half_c = clock();
@@ -135,6 +143,17 @@ void AES_Decision(void)
 
     outResult = P_result(outPredict);
  
+    char file_name[100] = "./src/fallback_decision/bev_image/";
+    char str[20] = {};
+
+    Image image;
+    image.read(366,251,"RGB",CharPixel,img);
+    printf("AES check2\n");
+    sprintf(str, "%6ld.jpg", idx++);
+    strcat(file_name, str);
+    image.write(file_name);
+
+
     end_c = clock();
 
     printf("Result: %lf, ", outResult);
@@ -185,7 +204,8 @@ void AESCb(const LOG_BYTE0ConstPtr& byte0,
     } 
 */
     AES_Decision();
-    
+
+        
 }
 
 void objectCb(const DetectedObjectArrayConstPtr& objectarr)
@@ -229,6 +249,8 @@ int main(int argc, char** argv)
 {
     ros::init(argc, argv, "decision_node");
     ros::NodeHandle nh;
+
+    InitializeMagick(*argv);
 
     ros::Subscriber object_sub = nh.subscribe("/detection/lidar_objects_test", 1, objectCb);
 

@@ -2,7 +2,7 @@
 ## Makefile generated for component 'BEV_image'. 
 ## 
 ## Makefile     : BEV_image_rtw.mk
-## Generated on : Tue Nov 09 00:42:17 2021
+## Generated on : Wed Nov 10 22:01:51 2021
 ## Final product: ./BEV_image.a
 ## Product type : static-library
 ## 
@@ -174,7 +174,7 @@ DEFINES = $(DEFINES_) $(DEFINES_CUSTOM) $(DEFINES_SKIPFORSIL) $(DEFINES_STANDARD
 ## SOURCE FILES
 ###########################################################################
 
-SRCS = $(START_DIR)/BEV_image_data.cpp $(START_DIR)/rt_nonfinite.cpp $(START_DIR)/rtGetNaN.cpp $(START_DIR)/rtGetInf.cpp $(START_DIR)/BEV_image_initialize.cpp $(START_DIR)/BEV_image_terminate.cpp $(START_DIR)/BEV_image.cpp $(START_DIR)/norm.cpp $(START_DIR)/Interacting.cpp $(START_DIR)/sqrtm.cpp $(START_DIR)/xnrm2.cpp $(START_DIR)/mrdivide_helper.cpp $(START_DIR)/det.cpp $(START_DIR)/inv.cpp $(START_DIR)/Mixing.cpp $(START_DIR)/TLC.cpp $(START_DIR)/I_lat.cpp $(START_DIR)/RSS_model.cpp $(START_DIR)/minOrMax.cpp $(START_DIR)/meshgrid.cpp $(START_DIR)/isequal.cpp $(START_DIR)/inpolygon.cpp $(START_DIR)/find.cpp $(START_DIR)/linspace.cpp $(START_DIR)/CTRV_MODEL.cpp $(START_DIR)/xzlarf.cpp $(START_DIR)/xdhseqr.cpp $(START_DIR)/xdlanv2.cpp $(START_DIR)/xrot.cpp $(START_DIR)/sqrt.cpp $(START_DIR)/CV_MODEL.cpp $(START_DIR)/tmp_SBEV.cpp $(START_DIR)/BEV_image_rtwutil.cpp $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/sources/utils/MW_nvidia_init.c
+SRCS = $(START_DIR)/BEV_image_data.cpp $(START_DIR)/rt_nonfinite.cpp $(START_DIR)/rtGetNaN.cpp $(START_DIR)/rtGetInf.cpp $(START_DIR)/BEV_image_initialize.cpp $(START_DIR)/BEV_image_terminate.cpp $(START_DIR)/BEV_image.cpp $(START_DIR)/norm.cpp $(START_DIR)/Interacting.cpp $(START_DIR)/sqrtm.cpp $(START_DIR)/xnrm2.cpp $(START_DIR)/mrdivide_helper.cpp $(START_DIR)/det.cpp $(START_DIR)/inv.cpp $(START_DIR)/Mixing.cpp $(START_DIR)/TLC.cpp $(START_DIR)/I_lat.cpp $(START_DIR)/RSS_model.cpp $(START_DIR)/minOrMax.cpp $(START_DIR)/meshgrid.cpp $(START_DIR)/isequal.cpp $(START_DIR)/inpolygon.cpp $(START_DIR)/find.cpp $(START_DIR)/linspace.cpp $(START_DIR)/matlab_array2magick.cpp $(START_DIR)/CTRV_MODEL.cpp $(START_DIR)/xzlarf.cpp $(START_DIR)/xdhseqr.cpp $(START_DIR)/xdlanv2.cpp $(START_DIR)/xrot.cpp $(START_DIR)/sqrt.cpp $(START_DIR)/CV_MODEL.cpp $(START_DIR)/tmp_SBEV.cpp $(START_DIR)/BEV_image_rtwutil.cpp $(MATLAB_WORKSPACE)/C/ProgramData/MATLAB/SupportPackages/R2021a/toolbox/target/supportpackages/nvidia/sources/utils/MW_nvidia_init.c
 
 ALL_SRCS = $(SRCS)
 
@@ -182,7 +182,7 @@ ALL_SRCS = $(SRCS)
 ## OBJECTS
 ###########################################################################
 
-OBJS = BEV_image_data.cpp.o rt_nonfinite.cpp.o rtGetNaN.cpp.o rtGetInf.cpp.o BEV_image_initialize.cpp.o BEV_image_terminate.cpp.o BEV_image.cpp.o norm.cpp.o Interacting.cpp.o sqrtm.cpp.o xnrm2.cpp.o mrdivide_helper.cpp.o det.cpp.o inv.cpp.o Mixing.cpp.o TLC.cpp.o I_lat.cpp.o RSS_model.cpp.o minOrMax.cpp.o meshgrid.cpp.o isequal.cpp.o inpolygon.cpp.o find.cpp.o linspace.cpp.o CTRV_MODEL.cpp.o xzlarf.cpp.o xdhseqr.cpp.o xdlanv2.cpp.o xrot.cpp.o sqrt.cpp.o CV_MODEL.cpp.o tmp_SBEV.cpp.o BEV_image_rtwutil.cpp.o MW_nvidia_init.c.o
+OBJS = BEV_image_data.cpp.o rt_nonfinite.cpp.o rtGetNaN.cpp.o rtGetInf.cpp.o BEV_image_initialize.cpp.o BEV_image_terminate.cpp.o BEV_image.cpp.o norm.cpp.o Interacting.cpp.o sqrtm.cpp.o xnrm2.cpp.o mrdivide_helper.cpp.o det.cpp.o inv.cpp.o Mixing.cpp.o TLC.cpp.o I_lat.cpp.o RSS_model.cpp.o minOrMax.cpp.o meshgrid.cpp.o isequal.cpp.o inpolygon.cpp.o find.cpp.o linspace.cpp.o matlab_array2magick.cpp.o CTRV_MODEL.cpp.o xzlarf.cpp.o xdhseqr.cpp.o xdlanv2.cpp.o xrot.cpp.o sqrt.cpp.o CV_MODEL.cpp.o tmp_SBEV.cpp.o BEV_image_rtwutil.cpp.o MW_nvidia_init.c.o
 
 ALL_OBJS = $(OBJS)
 
@@ -427,6 +427,10 @@ find.cpp.o : $(START_DIR)/find.cpp
 
 
 linspace.cpp.o : $(START_DIR)/linspace.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+matlab_array2magick.cpp.o : $(START_DIR)/matlab_array2magick.cpp
 	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 

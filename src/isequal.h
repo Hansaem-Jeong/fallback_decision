@@ -5,7 +5,7 @@
 // File: isequal.h
 //
 // MATLAB Coder version            : 5.2
-// C/C++ source code generated on  : 09-Nov-2021 00:41:02
+// C/C++ source code generated on  : 10-Nov-2021 22:00:36
 //
 
 #ifndef ISEQUAL_H

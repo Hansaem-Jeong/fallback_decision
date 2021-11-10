@@ -45,6 +45,7 @@ if(OPENMP_FOUND)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
   set(OpenMP_LIBS gomp)
 endif()
+find_package(ImageMagick COMPONENTS Magick++)
 
 
 add_message_files(
@@ -94,6 +95,7 @@ include_directories(
   src
   ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
+  ${ImageMagick_INCLUDE_DIRS}
 )
 
 
@@ -146,6 +148,7 @@ set(PROJECT_LIB_FILES
   src/xnrm2.cpp
   src/xrot.cpp
   src/xzlarf.cpp
+  src/matlab_array2magick.cpp
 #quat2eul
   src/quat2eul_aes.cpp
   src/quat2eul_aes_data.cpp
@@ -215,6 +218,7 @@ target_link_libraries(${PROJECT_NAME}_lib
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
   ${OpenMP_LIBS}
+  ${ImageMagick_LIBRARIES}
 )
 
 target_link_libraries(${PROJECT_NAME}

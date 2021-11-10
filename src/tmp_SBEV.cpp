@@ -5,7 +5,7 @@
 // File: tmp_SBEV.cpp
 //
 // MATLAB Coder version            : 5.2
-// C/C++ source code generated on  : 09-Nov-2021 00:41:02
+// C/C++ source code generated on  : 10-Nov-2021 22:00:36
 //
 
 // Include Files
@@ -20583,20 +20583,11 @@ void t_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 //                const double TJ_Y[70]
 // Return Type  : void
 //
-
-//AES
-//void tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
-//              double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
-//              double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-//              double laneInfoR[5], unsigned char image[275598], const double
-//             X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
-
 void tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
               double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
               double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
               double laneInfoR[5], unsigned char image[275598], const double
               X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
-
 {
   static double Rx[15311];
   static double Ry[15311];
