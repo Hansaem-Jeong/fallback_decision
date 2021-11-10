@@ -28,6 +28,8 @@ $rosbag play ~/{your workspace}/src/fallback_decision/bagfile/aes_data_bagfile.b
 
 ======================================================
 
-sudo apt-get install libmagick++-dev
-sudo apt-get install graphicsmagick-libmagick-dev-compat
-sudo apt-get install libgraphicsmagick1-dev
+$sudo apt-get install libmagick++-dev
+
+$sudo apt-get install graphicsmagick-libmagick-dev-compat
+
+$sudo apt-get install libgraphicsmagick1-dev
