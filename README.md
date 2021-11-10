@@ -25,3 +25,9 @@ $rosrun fallback_decision fallback_decision
 --- in other terminal
 
 $rosbag play ~/{your workspace}/src/fallback_decision/bagfile/aes_data_bagfile.bag
+
+======================================================
+
+sudo apt-get install libmagick++-dev
+sudo apt-get install graphicsmagick-libmagick-dev-compat
+sudo apt-get install libgraphicsmagick1-dev
