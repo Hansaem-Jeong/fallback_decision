@@ -131,6 +131,7 @@ void AES_Decision(void)
     start_c = clock();
     end_c = half_c = 0;
 
+    
 //    printf("in bev_image %lf\n", chassis_[0]);
 
     BEV_image(chassis_+1, track_+1, line_+1, aeb_, outBEV, img);
@@ -148,8 +149,8 @@ void AES_Decision(void)
 
     Image image;
     image.read(366,251,"RGB",CharPixel,img);
-    printf("AES check2\n");
-    sprintf(str, "%6ld.jpg", idx++);
+//    printf("AES check2\n");
+    sprintf(str, "%06ld.jpg", idx++);
     strcat(file_name, str);
     image.write(file_name);
 

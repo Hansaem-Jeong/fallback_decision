@@ -17,6 +17,7 @@
 #include "meshgrid.h"
 #include "minOrMax.h"
 #include "rt_nonfinite.h"
+#include <algorithm>
 #include <cmath>
 
 // Function Declarations
@@ -91,10 +92,11 @@ static double rt_powd_snf(double u0, double u1)
 void ab_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                  double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61],
                  const double RANGE_I_LAT_RANGE[255], const double laneInfoL[5],
-                 const double laneInfoR[5], unsigned char image[275598], const
+                 const double laneInfoR[5], const unsigned char tmp_image[275598], const
                  double X_pred[1600], const double TJ_X[70], const double TJ_Y
-                 [70])
+                 [70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -880,9 +882,10 @@ void ab_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void b_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -1668,10 +1671,11 @@ void b_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void bb_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                  double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61],
                  const double RANGE_I_LAT_RANGE[255], const double laneInfoL[5],
-                 const double laneInfoR[5], unsigned char image[275598], const
+                 const double laneInfoR[5], const unsigned char tmp_image[275598], const
                  double X_pred[1600], const double TJ_X[70], const double TJ_Y
-                 [70])
+                 [70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -2457,9 +2461,10 @@ void bb_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void c_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -3245,10 +3250,11 @@ void c_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void cb_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                  double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61],
                  const double RANGE_I_LAT_RANGE[255], const double laneInfoL[5],
-                 const double laneInfoR[5], unsigned char image[275598], const
+                 const double laneInfoR[5], const unsigned char tmp_image[275598], const
                  double X_pred[1600], const double TJ_X[70], const double TJ_Y
-                 [70])
+                 [70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -4034,9 +4040,10 @@ void cb_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void d_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -4822,10 +4829,11 @@ void d_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void db_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                  double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61],
                  const double RANGE_I_LAT_RANGE[255], const double laneInfoL[5],
-                 const double laneInfoR[5], unsigned char image[275598], const
+                 const double laneInfoR[5], const unsigned char tmp_image[275598], const
                  double X_pred[1600], const double TJ_X[70], const double TJ_Y
-                 [70])
+                 [70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -5611,9 +5619,10 @@ void db_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void e_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -6399,10 +6408,11 @@ void e_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void eb_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                  double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61],
                  const double RANGE_I_LAT_RANGE[255], const double laneInfoL[5],
-                 const double laneInfoR[5], unsigned char image[275598], const
+                 const double laneInfoR[5], const unsigned char tmp_image[275598], const
                  double X_pred[1600], const double TJ_X[70], const double TJ_Y
-                 [70])
+                 [70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -7188,9 +7198,10 @@ void eb_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void f_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -7976,10 +7987,11 @@ void f_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void fb_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                  double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61],
                  const double RANGE_I_LAT_RANGE[255], const double laneInfoL[5],
-                 const double laneInfoR[5], unsigned char image[275598], const
+                 const double laneInfoR[5], const unsigned char tmp_image[275598], const
                  double X_pred[1600], const double TJ_X[70], const double TJ_Y
-                 [70])
+                 [70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -8765,9 +8777,10 @@ void fb_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void g_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -9553,10 +9566,11 @@ void g_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void gb_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                  double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61],
                  const double RANGE_I_LAT_RANGE[255], const double laneInfoL[5],
-                 const double laneInfoR[5], unsigned char image[275598], const
+                 const double laneInfoR[5], const unsigned char tmp_image[275598], const
                  double X_pred[1600], const double TJ_X[70], const double TJ_Y
-                 [70])
+                 [70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -10342,9 +10356,10 @@ void gb_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void h_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -11130,9 +11145,10 @@ void h_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void i_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -11918,9 +11934,10 @@ void i_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void j_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -12706,9 +12723,10 @@ void j_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void k_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -13494,9 +13512,10 @@ void k_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void l_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -14282,9 +14301,10 @@ void l_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void m_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -15070,9 +15090,10 @@ void m_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void n_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -15858,9 +15879,10 @@ void n_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void o_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -16646,9 +16668,10 @@ void o_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void p_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -17434,9 +17457,10 @@ void p_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void q_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -18222,9 +18246,10 @@ void q_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void r_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -19010,9 +19035,10 @@ void r_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void s_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -19798,9 +19824,10 @@ void s_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void t_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -20586,9 +20613,10 @@ void t_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
               double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
               double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-              double laneInfoR[5], unsigned char image[275598], const double
-              X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+              double laneInfoR[5], const unsigned char tmp_image[275598], const double
+              X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -21374,9 +21402,10 @@ void tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void u_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -22162,9 +22191,10 @@ void u_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void v_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -22950,9 +22980,10 @@ void v_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void w_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -23738,9 +23769,10 @@ void w_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void x_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];
@@ -24526,9 +24558,10 @@ void x_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 void y_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
                 double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61], const
                 double RANGE_I_LAT_RANGE[255], const double laneInfoL[5], const
-                double laneInfoR[5], unsigned char image[275598], const double
-                X_pred[1600], const double TJ_X[70], const double TJ_Y[70])
+                double laneInfoR[5], const unsigned char tmp_image[275598], const double
+                X_pred[1600], const double TJ_X[70], const double TJ_Y[70], unsigned char image[275598])
 {
+  std::copy(&tmp_image[0], &tmp_image[275598], &image[0]);
   static double Rx[15311];
   static double Ry[15311];
   static int ii_data[15311];

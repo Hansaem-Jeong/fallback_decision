@@ -26,6 +26,23 @@
 #include <algorithm>
 #include <cmath>
 
+#define AES_OPENMP 1
+#include <stdio.h>
+
+void (*AES_funcs[32])(const double Chassis[11], const double Tmp_State[16128],
+                const double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61],
+                const double RANGE_I_LAT_RANGE[255], const double laneInfoL[5],
+                const double laneInfoR[5], const unsigned char tmp_image[275598],
+                const double X_pred[1600], const double TJ_X[70],
+                const double TJ_Y[70], unsigned char image[275598]) = 
+                                           {tmp_SBEV, b_tmp_SBEV, c_tmp_SBEV, d_tmp_SBEV,
+                                          e_tmp_SBEV, f_tmp_SBEV, g_tmp_SBEV, h_tmp_SBEV,
+                                          i_tmp_SBEV, j_tmp_SBEV, k_tmp_SBEV, l_tmp_SBEV,
+                                          m_tmp_SBEV, n_tmp_SBEV, o_tmp_SBEV, p_tmp_SBEV,
+                                          q_tmp_SBEV, r_tmp_SBEV, s_tmp_SBEV, t_tmp_SBEV,
+                                          u_tmp_SBEV, v_tmp_SBEV, w_tmp_SBEV, x_tmp_SBEV,
+                                          y_tmp_SBEV, ab_tmp_SBEV, bb_tmp_SBEV, cb_tmp_SBEV,
+                                          db_tmp_SBEV, eb_tmp_SBEV, fb_tmp_SBEV, gb_tmp_SBEV}; 
 
 // Variable Definitions
 static double State[16128];
@@ -637,7 +654,7 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
   static const double dv2[9]{
       25.0, 0.0, 0.0, 0.0, 25.0, 0.0, 0.0, 0.0, 0.27415567780803768};
   static double dv[15232];
-/*
+#ifndef AES_OPENMP
   static unsigned char BEV_Window_out_1[275598];
   static unsigned char BEV_Window_out_10[275598];
   static unsigned char BEV_Window_out_11[275598];
@@ -669,8 +686,9 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
   static unsigned char BEV_Window_out_7[275598];
   static unsigned char BEV_Window_out_8[275598];
   static unsigned char BEV_Window_out_9[275598];
-*/
+#else
   static unsigned char BEV_Window_out_all[32][275598];
+#endif
   static unsigned char image[275598];
   double X_pred[1600];
   double Training_data_data[896];
@@ -1220,13 +1238,18 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
   laneInfoR[4] = Lane[9];
   //  for track_number = 1:Traffic_Number
   // AES
+#ifdef AES_OPENMP
   #pragma omp parallel for
   for(int idx = 0;idx<32;++idx) {
+//    printf("AES check\n");
     std::copy(&image[0], &image[275598], &BEV_Window_out_all[idx][0]);
-    tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_all[idx], X_pred, TJ_X, TJ_Y);
+    AES_funcs[idx](Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
+             x_ini, laneInfoR, image, X_pred, TJ_X, TJ_Y, BEV_Window_out_all[idx]);
   }
-/*
+//  AES_funcs[31](Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
+//             x_ini, laneInfoR, image, X_pred, TJ_X, TJ_Y, );
+
+#else
   std::copy(&image[0], &image[275598], &BEV_Window_out_1[0]);
   tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
            x_ini, laneInfoR, BEV_Window_out_1, X_pred, TJ_X, TJ_Y);
@@ -1322,7 +1345,7 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
               x_ini, laneInfoR, BEV_Window_out_31, X_pred, TJ_X, TJ_Y);
   gb_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
               x_ini, laneInfoR, image, X_pred, TJ_X, TJ_Y);
-*/
+#endif
   for (DEC_param = 0; DEC_param < 18; DEC_param++) {
     if ((DEC_param + 1 == 1) || (DEC_param + 1 == 4) || (DEC_param + 1 == 7) ||
         (DEC_param + 1 == 10) || (DEC_param + 1 == 13) ||
@@ -1330,6 +1353,7 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
       for (b_i = 0; b_i < 61; b_i++) {
         for (i1 = 0; i1 < 251; i1++) {
           i = (i1 + 251 * b_i) + 15311 * DEC_param;
+#ifdef AES_OPENMP
           sample_ts = static_cast<int>(static_cast<unsigned int>(BEV_Window_out_all[0][i]) +
                                        BEV_Window_out_all[1][i]);
           if(static_cast<unsigned int>(sample_ts) > 255U) {
@@ -1344,7 +1368,7 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
           }
 
 
-/*
+#else
 
           sample_ts =
               static_cast<int>(static_cast<unsigned int>(BEV_Window_out_1[i]) +
@@ -1502,17 +1526,28 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
           if (static_cast<unsigned int>(sample_ts) > 255U) {
             sample_ts = 255;
           }
-*/
+#endif
           b_BEV_image[i] = static_cast<unsigned char>(sample_ts);
         }
       }
     } else {
+#ifdef AES_OPENMP
       for (b_i = 0; b_i < 61; b_i++) {
         std::copy(&BEV_Window_out_all[0][DEC_param * 15311 + b_i * 251],
                   &BEV_Window_out_all[0][static_cast<int>(
                       (DEC_param * 15311 + b_i * 251) + 251U)],
                   &b_BEV_image[DEC_param * 15311 + b_i * 251]);
       }
+#else
+      for (b_i = 0; b_i < 61; b_i++) {
+        std::copy(&BEV_Window_out_1[DEC_param * 15311 + b_i * 251],
+                  &BEV_Window_out_1[static_cast<int>(
+                      (DEC_param * 15311 + b_i * 251) + 251U)],
+                  &b_BEV_image[DEC_param * 15311 + b_i * 251]);
+      }
+
+
+#endif
     }
   }
   // filen = strcat('bev_image_', int2str(idx),'.jpg');
