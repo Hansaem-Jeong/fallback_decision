@@ -23,6 +23,8 @@
 
 #include "chassis_msg/LOG_BYTE2.h"
 
+#include "fallback_decision/AES_decision.h" 
+
 /*** bev image header ***/
 #include "coder_bounded_array.h"
 #include "CTRV_MODEL.h"
@@ -122,7 +124,44 @@ float outPredict[7];
 double outResult;
 //unsigned char pix [] = {200,200,200,100,100,100,0,0,0,255,0,0,0,255,0,0,0,255};
 static long int idx;
+static int pub_flag;
 
+
+
+
+void AES_Publish(float result, ros::Publisher AES_pub)
+{
+    fallback_decision::AES_decision AES_msg;
+    static int index = 0;
+
+    AES_msg.header.stamp = ros::Time::now();
+    AES_msg.header.seq = ++index;
+
+    switch((int)result){
+    case 2:
+        AES_msg.result.data="ESL";
+        break;
+    case 3:
+        AES_msg.result.data="ESR";
+        break;
+    case 4:
+        AES_msg.result.data="ESS";
+        break;
+    case 5:
+        AES_msg.result.data="ELCL";
+        break;
+    case 6:
+        AES_msg.result.data="ELCR";
+        break;
+    case 7:
+        AES_msg.result.data="CM";
+        break;
+    case 8:
+        AES_msg.result.data="Safe";
+        break;
+    }
+    AES_pub.publish(AES_msg);
+}
 
 void AES_Decision(void)
 {
@@ -154,6 +193,8 @@ void AES_Decision(void)
     strcat(file_name, str);
     image.write(file_name);
 
+    pub_flag = 1;
+//    AES_Publish(outResult);
 
     end_c = clock();
 
@@ -176,7 +217,7 @@ void AESCb(const LOG_BYTE0ConstPtr& byte0,
            //const DetectedObjectArrayConstPtr& objectarr)
 
 {
-   // printf("sync success\n");
+    //printf("sync success\n");
 // Chassis
 //    chassis_[0] = byte0->header.stamp.sec + byte0->header.stamp.nsec/1000000000.;
 //    printf("chassis time : %.3lf\n", chassis_[0]);
@@ -250,10 +291,12 @@ int main(int argc, char** argv)
 {
     ros::init(argc, argv, "decision_node");
     ros::NodeHandle nh;
+    
 
     InitializeMagick(*argv);
 
     ros::Subscriber object_sub = nh.subscribe("/detection/lidar_objects_test", 1, objectCb);
+    ros::Publisher AES_pub = nh.advertise<fallback_decision::AES_decision>("AES_Decision", 1);
 
     message_filters::Subscriber<LOG_BYTE0> byte0_sub(nh, "LOG_BYTE0", 1);
     message_filters::Subscriber<LOG_BYTE1> byte1_sub(nh, "LOG_BYTE1", 1);
@@ -274,7 +317,20 @@ int main(int argc, char** argv)
     //sync.registerCallback(boost::bind(&chassisCb, _1, _2));
     sync.registerCallback(boost::bind(&AESCb, _1, _2, _3, _4, _5, _6));
 
+    while(1) {
+    
+        ros::spinOnce();
+        if(pub_flag) {
+//            printf("AES check, pub_flag\n");
+            AES_Publish(outResult, AES_pub);
+            pub_flag = 0;
+        }
+ 
+    }
+
     printf("\n");
+
+
     ros::spin();
 
     return 0;

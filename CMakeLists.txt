@@ -56,6 +56,7 @@ add_message_files(
   Traffic.msg
   Line.msg
   AEB.msg
+  AES_decision.msg
 
 )
 
