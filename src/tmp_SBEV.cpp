@@ -726,8 +726,12 @@ void ab_tmp_SBEV(const double Chassis[11], const double Tmp_State[16128], const
 
   if (!coder::isequal(empty_black_image, image)) {
     // && track_number == Traffic_Number
-    coder::linspace(-Chassis[10] / 2.0, Chassis[10] / 2.0, TV_range_y);
-    coder::linspace(-Chassis[9], 0.0, TV_range_x);
+// AES
+//    coder::linspace(-Chassis[10] / 2.0, Chassis[10] / 2.0, TV_range_y);
+//    coder::linspace(-Chassis[9], 0.0, TV_range_x);
+    coder::linspace(-1.82 / 2.0, 1.82 / 2.0, TV_range_y);
+    coder::linspace(-4.85, 0.0, TV_range_x);
+
     for (k = 0; k < 5; k++) {
       //  time,10 sample (prediction sample),[ACC DEC ESL ESR ELCL ELCR ESS]
       for (iindx = 0; iindx < 10; iindx++) {

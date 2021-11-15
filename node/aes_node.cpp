@@ -114,7 +114,7 @@ using namespace mobileye_avante_msg;
 using namespace Magick;
 
 
-double chassis_[12] = {0, 0, 0, 0, 0, 0, 0, 2.19, 2.46, 4.85, 1.82};
+double chassis_[12] = {0, 0, 0, 0, 0, 0, 0, 0, 2.19, 2.46, 4.85, 1.82};
 double track_[289];
 double line_[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1};
 double aeb_ = 1;
