@@ -104,14 +104,18 @@
 #include "rt_defines.h"
 
 //magick
+#ifdef AES_DECISION_IMAGE
 #include "Magick++.h"
 #include "matlab_array2magick.h"
+#endif
 
 using namespace message_filters;
 using namespace chassis_msg;
 using namespace autoware_msgs;
 using namespace mobileye_avante_msg;
+#ifdef AES_DECISION_IMAGE
 using namespace Magick;
+#endif
 
 
 double chassis_[12] = {0, 0, 0, 0, 0, 0, 0, 0, 2.19, 2.46, 4.85, 1.82};
@@ -125,10 +129,25 @@ double outResult;
 //unsigned char pix [] = {200,200,200,100,100,100,0,0,0,255,0,0,0,255,0,0,0,255};
 static long int idx;
 static int pub_flag;
+int aes_object;
+
+#ifdef AES_DECISION_MEASURE
+#include <sys/stat.h>
+#define MEASUREMENT_CNT 1000
+#define THRESHOLD 25
+int meas_object[MEASUREMENT_CNT];
+int meas_result[MEASUREMENT_CNT];
+double meas_cycletime[MEASUREMENT_CNT];
+
+int meas_cnt;
+
+#define meas_path "./src/fallback_decision/measure/"
+#define meas_file "measure.csv"
+#endif
 
 
 
-
+#ifdef AES_DECISION_PUBLISH
 void AES_Publish(float result, ros::Publisher AES_pub)
 {
     fallback_decision::AES_decision AES_msg;
@@ -162,6 +181,7 @@ void AES_Publish(float result, ros::Publisher AES_pub)
     }
     AES_pub.publish(AES_msg);
 }
+#endif
 
 void AES_Decision(void)
 {
@@ -169,11 +189,15 @@ void AES_Decision(void)
     clock_t start_c, end_c, half_c;
     start_c = clock();
     end_c = half_c = 0;
-
+    
+    printf("---------- Start ----------\n");
     
 //    printf("in bev_image %lf\n", chassis_[0]);
-
+#ifdef AES_DECISION_IMAGE
     BEV_image(chassis_+1, track_+1, line_+1, aeb_, outBEV, img);
+#else
+    BEV_image(chassis_+1, track_+1, line_+1, aeb_, outBEV);
+#endif
     
 //    printf("in bev_image outBEV %d\n", outBEV[0]);
     half_c = clock();
@@ -183,6 +207,7 @@ void AES_Decision(void)
 
     outResult = P_result(outPredict);
  
+#ifdef AES_DECISION_IMAGE
     char file_name[100] = "./src/fallback_decision/bev_image/";
     char str[20] = {};
 
@@ -192,15 +217,55 @@ void AES_Decision(void)
     sprintf(str, "%06ld.jpg", idx++);
     strcat(file_name, str);
     image.write(file_name);
+#endif
 
+#ifdef AES_DECISION_PUBLISH
     pub_flag = 1;
 //    AES_Publish(outResult);
+#endif
 
     end_c = clock();
+    meas_cnt += 1;
+#ifdef AES_DECISION_MEASURE
+    int tmp_cnt = meas_cnt - THRESHOLD;
+    if(tmp_cnt>=0&&tmp_cnt<=MEASUREMENT_CNT) {
+        meas_cycletime[tmp_cnt] = (double)(end_c - start_c)/CLOCKS_PER_SEC;
+        meas_object[tmp_cnt] = aes_object;
+        meas_result[tmp_cnt] = (int)outResult;
+    }
+    
+    if(tmp_cnt==MEASUREMENT_CNT) {
+        int exist = 0;
+        FILE *fp;
+        char file_name[100] = "";
+        
+        strcat(file_name, meas_path);
+        strcat(file_name, meas_file);
 
+        fp = fopen(file_name, "w+");
+        if(fp==NULL) {
+            while(!exist) {
+                int result;
+                result = mkdir(meas_path, 0766);
+                if(result==0) {
+                    exist = 1;
+                    fp=fopen(file_name, "w+");
+                }
+            }
+        }
+        fprintf(fp, "%s,%s,%s\n", "result", "object", "cycle_time");
+        for(int i =0;i<tmp_cnt;++i) {
+            fprintf(fp, "%d,%d,%.0f\n", meas_result[i], meas_object[i], meas_cycletime[i]*1000);
+        }
+        fclose(fp);
+        printf(" AES Measure , Complete\n");
+    }
+#endif
+    printf("index: %d-th\n", meas_cnt);
     printf("Result: %lf, ", outResult);
     printf("CycleTime: %lf (bev: %lf, predictL %lf)\n",(double)(end_c-start_c)/CLOCKS_PER_SEC,(double)(half_c-start_c)/CLOCKS_PER_SEC,(double)(end_c-half_c)/CLOCKS_PER_SEC);
 
+    printf("----------- End -----------\n");
 //    #pragma omp parallel for
 //   for(int i=0; i<=10;++i) {
 //       printf("i %d\n", i);
@@ -255,8 +320,9 @@ void objectCb(const DetectedObjectArrayConstPtr& objectarr)
 // Track
     memset(track_, 0, sizeof(track_));
     if(objectarr->objects.size()) {
-        printf("object size : %d\n", objectarr->objects.size());
-        for(int i = 0; i<objectarr->objects.size(); ++i) {
+        aes_object = objectarr->objects.size();
+        printf("object size : %d\n", aes_object);
+        for(int i = 0; i<aes_object; ++i) {
 //            printf("%lf\n", objectarr->objects[i].pose.position.x);
             double a = 0;
             double b = 0;
@@ -292,11 +358,14 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "decision_node");
     ros::NodeHandle nh;
     
-
+#ifdef AES_DECISION_IMAGE
     InitializeMagick(*argv);
+#endif
 
     ros::Subscriber object_sub = nh.subscribe("/detection/lidar_objects_test", 1, objectCb);
+#ifdef AES_DECISION_PUBLISH
     ros::Publisher AES_pub = nh.advertise<fallback_decision::AES_decision>("AES_Decision", 1);
+#endif
 
     message_filters::Subscriber<LOG_BYTE0> byte0_sub(nh, "LOG_BYTE0", 1);
     message_filters::Subscriber<LOG_BYTE1> byte1_sub(nh, "LOG_BYTE1", 1);
@@ -317,6 +386,7 @@ int main(int argc, char** argv)
     //sync.registerCallback(boost::bind(&chassisCb, _1, _2));
     sync.registerCallback(boost::bind(&AESCb, _1, _2, _3, _4, _5, _6));
 
+#ifdef AES_DECISION_PUBLISH
     while(1) {
     
         ros::spinOnce();
@@ -327,7 +397,7 @@ int main(int argc, char** argv)
         }
  
     }
-
+#endif
     printf("\n");
 
 

@@ -69,10 +69,16 @@ static double flag[32];
 //                unsigned char image_magick[275598]
 // Return Type  : void
 //
+#ifdef AES_DECISION_IMAGE
 void BEV_image(const double Chassis[11], const double Traffic[288],
                const double Lane[10], double AEB_in,
                unsigned char b_BEV_image[275598],
                unsigned char image_magick[275598])
+#else
+void BEV_image(const double Chassis[11], const double Traffic[288],
+               const double Lane[10], double AEB_in,
+               unsigned char b_BEV_image[275598])
+#endif
 {
   static const double RANGE_I_LAT_RANGE[255]{-0.2,
                                              -0.1952755905511811,
@@ -1552,7 +1558,9 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
   }
   // filen = strcat('bev_image_', int2str(idx),'.jpg');
   // imwrite(BEV_image, 'bev_image.jpg');
+#ifdef AES_DECISION_IMAGE
   matlab_array2magick(b_BEV_image, image_magick);
+#endif
 }
 
 //

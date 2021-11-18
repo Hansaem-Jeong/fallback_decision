@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(fallback_decision)
 
+# Measurement ####################################
+#### Enable
+#add_compile_definitions(AES_DECISION_MEASURE)
+#### Disable
+add_compile_definitions(AES_DECISION_PUBLISH)
+add_compile_definitions(AES_DECISION_IMAGE)
+##################################################
+
 # Find CUDA
 find_package(CUDA QUIET)
 if (CUDA_FOUND)

@@ -17,10 +17,16 @@
 #include <cstdlib>
 
 // Function Declarations
+#ifdef AES_DECISION_IMAGE
 extern void BEV_image(const double Chassis[11], const double Traffic[288],
                       const double Lane[10], double AEB_in,
                       unsigned char b_BEV_image[275598],
                       unsigned char image_magick[275598]);
+#else
+extern void BEV_image(const double Chassis[11], const double Traffic[288],
+                      const double Lane[10], double AEB_in,
+                      unsigned char b_BEV_image[275598]);
+#endif
 
 void out_Prob_ctrv_not_empty_init();
 
