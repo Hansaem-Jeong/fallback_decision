@@ -225,8 +225,8 @@ void AES_Decision(void)
 #endif
 
     end_c = clock();
-    meas_cnt += 1;
 #ifdef AES_DECISION_MEASURE
+    meas_cnt += 1;
     int tmp_cnt = meas_cnt - THRESHOLD;
     if(tmp_cnt>=0&&tmp_cnt<=MEASUREMENT_CNT) {
         meas_cycletime[tmp_cnt] = (double)(end_c - start_c)/CLOCKS_PER_SEC;
@@ -260,11 +260,12 @@ void AES_Decision(void)
         fclose(fp);
         printf(" AES Measure , Complete\n");
     }
-#endif
     printf("index: %d-th\n", meas_cnt);
     printf("Result: %lf, ", outResult);
     printf("CycleTime: %lf (bev: %lf, predictL %lf)\n",(double)(end_c-start_c)/CLOCKS_PER_SEC,(double)(half_c-start_c)/CLOCKS_PER_SEC,(double)(end_c-half_c)/CLOCKS_PER_SEC);
 
+#endif
+    
     printf("----------- End -----------\n");
 //    #pragma omp parallel for
 //   for(int i=0; i<=10;++i) {
