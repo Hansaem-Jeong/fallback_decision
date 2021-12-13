@@ -5,7 +5,7 @@
 // File: matlab_array2magick.cpp
 //
 // MATLAB Coder version            : 5.2
-// C/C++ source code generated on  : 12-Nov-2021 04:02:16
+// C/C++ source code generated on  : 13-Dec-2021 11:53:25
 //
 
 // Include Files

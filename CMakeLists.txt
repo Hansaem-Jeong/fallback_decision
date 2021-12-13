@@ -3,7 +3,7 @@ project(fallback_decision)
 
 # Measurement ####################################
 #### Enable
-#add_compile_definitions(AES_DECISION_MEASURE)
+add_compile_definitions(AES_DECISION_MEASURE)
 #### Disable
 add_compile_definitions(AES_DECISION_PUBLISH)
 add_compile_definitions(AES_DECISION_IMAGE)
@@ -132,7 +132,8 @@ set(PROJECT_LIB_FILES
   src/CV_MODEL.cpp
   src/det.cpp
   src/find.cpp
-#  src/HONDA.cpp
+  src/HONDA.cpp
+  src/ifWhileCond.cpp
   src/I_lat.cpp
   src/inpolygon.cpp
   src/Interacting.cpp

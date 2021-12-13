@@ -5,7 +5,7 @@
 // File: BEV_image.cpp
 //
 // MATLAB Coder version            : 5.2
-// C/C++ source code generated on  : 10-Nov-2021 22:00:36
+// C/C++ source code generated on  : 13-Dec-2021 11:53:25
 //
 
 // Include Files
@@ -14,6 +14,7 @@
 #include "BEV_image_initialize.h"
 #include "CTRV_MODEL.h"
 #include "CV_MODEL.h"
+#include "HONDA.h"
 #include "I_lat.h"
 #include "Interacting.h"
 #include "Mixing.h"
@@ -25,24 +26,6 @@
 #include "tmp_SBEV.h"
 #include <algorithm>
 #include <cmath>
-
-#define AES_OPENMP 1
-#include <stdio.h>
-
-void (*AES_funcs[32])(const double Chassis[11], const double Tmp_State[16128],
-                const double RANGE_X_RANGE[251], const double RANGE_Y_RANGE[61],
-                const double RANGE_I_LAT_RANGE[255], const double laneInfoL[5],
-                const double laneInfoR[5], const unsigned char tmp_image[275598],
-                const double X_pred[1600], const double TJ_X[70],
-                const double TJ_Y[70], unsigned char image[275598]) = 
-                                           {tmp_SBEV, b_tmp_SBEV, c_tmp_SBEV, d_tmp_SBEV,
-                                          e_tmp_SBEV, f_tmp_SBEV, g_tmp_SBEV, h_tmp_SBEV,
-                                          i_tmp_SBEV, j_tmp_SBEV, k_tmp_SBEV, l_tmp_SBEV,
-                                          m_tmp_SBEV, n_tmp_SBEV, o_tmp_SBEV, p_tmp_SBEV,
-                                          q_tmp_SBEV, r_tmp_SBEV, s_tmp_SBEV, t_tmp_SBEV,
-                                          u_tmp_SBEV, v_tmp_SBEV, w_tmp_SBEV, x_tmp_SBEV,
-                                          y_tmp_SBEV, ab_tmp_SBEV, bb_tmp_SBEV, cb_tmp_SBEV,
-                                          db_tmp_SBEV, eb_tmp_SBEV, fb_tmp_SBEV, gb_tmp_SBEV}; 
 
 // Variable Definitions
 static double State[16128];
@@ -69,16 +52,9 @@ static double flag[32];
 //                unsigned char image_magick[275598]
 // Return Type  : void
 //
-#ifdef AES_DECISION_IMAGE
 void BEV_image(const double Chassis[11], const double Traffic[288],
-               const double Lane[10], double AEB_in,
-               unsigned char b_BEV_image[275598],
+               const double Lane[10], double, unsigned char b_BEV_image[275598],
                unsigned char image_magick[275598])
-#else
-void BEV_image(const double Chassis[11], const double Traffic[288],
-               const double Lane[10], double AEB_in,
-               unsigned char b_BEV_image[275598])
-#endif
 {
   static const double RANGE_I_LAT_RANGE[255]{-0.2,
                                              -0.1952755905511811,
@@ -660,7 +636,7 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
   static const double dv2[9]{
       25.0, 0.0, 0.0, 0.0, 25.0, 0.0, 0.0, 0.0, 0.27415567780803768};
   static double dv[15232];
-#ifndef AES_OPENMP
+  static unsigned char BEV_Window_out[275598];
   static unsigned char BEV_Window_out_1[275598];
   static unsigned char BEV_Window_out_10[275598];
   static unsigned char BEV_Window_out_11[275598];
@@ -692,11 +668,25 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
   static unsigned char BEV_Window_out_7[275598];
   static unsigned char BEV_Window_out_8[275598];
   static unsigned char BEV_Window_out_9[275598];
-#else
-  static unsigned char BEV_Window_out_all[32][275598];
-#endif
   static unsigned char image[275598];
+  static unsigned char tmp_BEV_Window_out[15311];
+  static unsigned char tmp_img10[15311];
+  static unsigned char tmp_img11[15311];
+  static unsigned char tmp_img12[15311];
+  static unsigned char tmp_img13[15311];
+  static unsigned char tmp_img2[15311];
+  static unsigned char tmp_img3[15311];
+  static unsigned char tmp_img4[15311];
+  static unsigned char tmp_img5[15311];
+  static unsigned char tmp_img6[15311];
+  static unsigned char tmp_img7[15311];
+  static unsigned char tmp_img8[15311];
+  static unsigned char tmp_img9[15311];
+  static unsigned char uv[15311];
+  static unsigned char uv1[15311];
+  static bool bv[15311];
   double X_pred[1600];
+  double b_X_pred[1600];
   double Training_data_data[896];
   double old_P_ctrv[800];
   double old_P_cv[800];
@@ -730,19 +720,27 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
   double tmp_TLC;
   double tmp_TTC;
   double v_e;
-  int DEC_param;
+  int P_ctrv_old_tmp;
   int b_i;
   int i;
   int i1;
   int sample_ts;
   int track_number;
+  unsigned char tmp_img14[15311];
+  unsigned char tmp_img15[15311];
+  unsigned char tmp_img16[15311];
+  unsigned char tmp_img17[15311];
+  unsigned char tmp_img18[15311];
+  unsigned char uv2[15311];
+  unsigned char u;
+  bool b;
   if (!isInitialized_BEV_image) {
     BEV_image_initialize();
   }
-  // function
-  // [BEV_image,State,out_Prob_ctrv,out_Prob_cv,out_P_ctrv,out_P_cv,flag] =
-  // fcn(Chassis, Traffic, Lane,
-  // AEB_in,old_State,old_Prob_ctrv,old_Prob_cv,old_P_ctrv,old_P_cv,old_flag)
+  //  function
+  //  [BEV_image,State,out_Prob_ctrv,out_Prob_cv,out_P_ctrv,out_P_cv,flag] =
+  //  BEV_image(Chassis, Traffic, Lane,
+  //  AEB_in,old_State,old_Prob_ctrv,old_Prob_cv,old_P_ctrv,old_P_cv,old_flag)
   //  CarMaker data의 sample time
   //  p.145
   //
@@ -819,6 +817,7 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
   //  s
   //  s
   //  s
+  //  empty_black_image = zeros(IMAGE_X, IMAGE_Y, IMAGE_Z);
   //  empty_black_image = uint8(zeros(IMAGE_X, IMAGE_Y, IMAGE_Z));
   //
   //  Threat Parameter
@@ -878,18 +877,17 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
   Distance_to_Leftlane = Lane[6];
   Distance_to_Rightlane = Lane[7];
   //  Generation Training data
-  track_number = 0;
-  for (DEC_param = 0; DEC_param < 32; DEC_param++) {
+  for (i = 0; i < 32; i++) {
     for (b_i = 0; b_i < 28; b_i++) {
-      std::copy(&State[DEC_param * 504 + b_i * 18],
-                &State[static_cast<int>((DEC_param * 504 + b_i * 18) + 17U)],
-                &dv[DEC_param * 476 + b_i * 17]);
-      std::copy(&dv[DEC_param * 476 + b_i * 17],
-                &dv[static_cast<int>((DEC_param * 476 + b_i * 17) + 17U)],
-                &State[(DEC_param * 504 + b_i * 18) + 1]);
+      std::copy(&State[i * 504 + b_i * 18],
+                &State[static_cast<int>((i * 504 + b_i * 18) + 17U)],
+                &dv[i * 476 + b_i * 17]);
+      std::copy(&dv[i * 476 + b_i * 17],
+                &dv[static_cast<int>((i * 476 + b_i * 17) + 17U)],
+                &State[(i * 504 + b_i * 18) + 1]);
     }
-    d = Traffic[9 * DEC_param + 4];
-    d1 = Traffic[9 * DEC_param + 3];
+    d = Traffic[9 * i + 4];
+    d1 = Traffic[9 * i + 3];
     //      Class_B(CLASS_B.PREPROCESSING.HEADING_ANGLE, track_number) =
     //      (Class_B(CLASS_B.MEASURE.GLO_HEADING_ANGLE, track_number)
     //      -In_Vehicle_Sensor(IN_VEHICLE_SENSOR.MEASURE.GLO_HEADING_ANGLE, 1));
@@ -930,39 +928,33 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
     //      1)) + Class_B(CLASS_B.MEASURE.GLO_VEL_Y,
     //      track_number).*cos(In_Vehicle_Sensor(IN_VEHICLE_SENSOR.MEASURE.GLO_HEADING_ANGLE,
     //      1)) - In_Vehicle_Sensor(IN_VEHICLE_SENSOR.MEASURE.LAT_VEL, 1);
-    track_number = DEC_param;
-    Training_data_data[28 * DEC_param + 1] = Chassis[10];
-    Training_data_data[28 * DEC_param + 2] = Chassis[9];
-    Training_data_data[28 * DEC_param + 5] = Traffic[9 * DEC_param];
-    Training_data_data[28 * DEC_param + 6] = Traffic[9 * DEC_param + 1];
-    Training_data_data[28 * DEC_param + 7] = d1;
-    Training_data_data[28 * DEC_param + 8] = d;
-    Training_data_data[28 * DEC_param + 9] = std::sqrt(d1 * d1 + d * d);
-    Training_data_data[28 * DEC_param + 10] = Traffic[9 * DEC_param + 2];
-    Training_data_data[28 * DEC_param + 3] = Traffic[9 * DEC_param + 8];
-    Training_data_data[28 * DEC_param + 4] = Traffic[9 * DEC_param + 7];
+    Training_data_data[28 * i + 1] = Chassis[10];
+    Training_data_data[28 * i + 2] = Chassis[9];
+    Training_data_data[28 * i + 5] = Traffic[9 * i];
+    Training_data_data[28 * i + 6] = Traffic[9 * i + 1];
+    Training_data_data[28 * i + 7] = d1;
+    Training_data_data[28 * i + 8] = d;
+    Training_data_data[28 * i + 9] = std::sqrt(d1 * d1 + d * d);
+    Training_data_data[28 * i + 10] = Traffic[9 * i + 2];
+    Training_data_data[28 * i + 3] = Traffic[9 * i + 8];
+    Training_data_data[28 * i + 4] = Traffic[9 * i + 7];
   }
   //  IMM-UKF
   //  [y x yaw v yawrate]
-  // out_Prob_cv = 0.2 * ones(Traffic_Number,1);
-  // out_Prob_ctrv = 0.8 * ones(Traffic_Number,1);
-  // out_P_ctrv = zeros(5,5,Traffic_Number);
-  // out_P_cv = zeros(5,5,Traffic_Number);
+  //  out_Prob_cv = 0.2 * ones(Traffic_Number,1);
+  //  out_Prob_ctrv = 0.8 * ones(Traffic_Number,1);
+  //  out_P_ctrv = zeros(5,5,Traffic_Number);
+  //  out_P_cv = zeros(5,5,Traffic_Number);
   //  ACC DEC ESL ESR ELCL ELCR ESS
   //  TJ_ELCL=zeros(length(index_time),10);
   //  TJ_ELCR=zeros(length(index_time),10);
   //  TJ_DEC=zeros(length(index_time),10);
   //  TJ_ACC=zeros(length(index_time),10);
   //  for index_time = 1:length(sim_time)
-  Training_data[0] = Training_data_data[28 * track_number + 8];
-  Training_data[1] = Training_data_data[28 * track_number + 7];
+  Training_data[0] = Training_data_data[8];
+  Training_data[1] = Training_data_data[7];
   v_e = coder::b_norm(Training_data);
   //  Fr1(body fixed)
-  if (AEB_in == 0.0) {
-    DEC_param = 0;
-  } else {
-    DEC_param = -6;
-  }
   //  ACC Y
   //  DEC Y
   //  ESL X
@@ -980,27 +972,26 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
     TJ_Y[i + 20] = d;
     d1 = t * t;
     c_ctrv = v_e * t;
-    mu_ctrv = c_ctrv + 0.5 * static_cast<double>(DEC_param) * d1;
+    mu_ctrv = c_ctrv + 3.0 * d1;
     TJ_X[i + 20] = mu_ctrv;
     // ESR
     Prob_cv_old = 0.55704230082163364 * std::sin(1.6409734010875878 * t) -
                   0.91409159892893144 * t;
     TJ_Y[i + 40] = Prob_cv_old;
-    t = c_ctrv + 0.5 * static_cast<double>(DEC_param) * d1;
-    TJ_X[i + 40] = t;
+    TJ_X[i + 40] = mu_ctrv;
     TJ_X[i] = c_ctrv + 2.0 * d1;
     TJ_X[i + 10] = c_ctrv + -5.0 * d1;
     TJ_X[i + 30] = mu_ctrv;
     TJ_Y[i + 30] = -d;
-    TJ_X[i + 50] = t;
+    TJ_X[i + 50] = mu_ctrv;
     TJ_Y[i + 50] = -Prob_cv_old;
-    TJ_X[i + 60] = t;
+    TJ_X[i + 60] = mu_ctrv;
     TJ_Y[i + 60] = Prob_cv_old;
     TJ_Y[i] = 0.0;
     TJ_Y[i + 10] = 0.0;
   }
   //  DEC Y
-  // flag=zeros(32,1);
+  //  flag=zeros(32,1);
   x_ini[4] = 0.0;
   for (track_number = 0; track_number < 32; track_number++) {
     d = Training_data_data[28 * track_number + 5];
@@ -1033,10 +1024,10 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
       Prob_cv_old = old_Prob_cv[track_number];
       for (b_i = 0; b_i < 5; b_i++) {
         for (i1 = 0; i1 < 5; i1++) {
-          DEC_param = i1 + 5 * b_i;
-          i = DEC_param + 25 * track_number;
-          P_ctrv_old[DEC_param] = old_P_ctrv[i];
-          P_cv_old[DEC_param] = old_P_cv[i];
+          i = i1 + 5 * b_i;
+          P_ctrv_old_tmp = i + 25 * track_number;
+          P_ctrv_old[i] = old_P_ctrv[P_ctrv_old_tmp];
+          P_cv_old[i] = old_P_cv[P_ctrv_old_tmp];
         }
       }
     }
@@ -1055,8 +1046,9 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
                            flag[track_number], d, P_ctrv_old, dv2, t);
       for (i = 0; i < 5; i++) {
         for (b_i = 0; b_i < 5; b_i++) {
-          DEC_param = b_i + 5 * i;
-          P_ctrv_tmp[DEC_param + 25 * sample_ts] = P_ctrv_old[DEC_param];
+          P_ctrv_old_tmp = b_i + 5 * i;
+          P_ctrv_tmp[P_ctrv_old_tmp + 25 * sample_ts] =
+              P_ctrv_old[P_ctrv_old_tmp];
         }
         x_cv[i] = x_ini[i];
       }
@@ -1065,8 +1057,8 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
                              flag[track_number], d, P_cv_old, dv2, t);
       for (b_i = 0; b_i < 5; b_i++) {
         for (i1 = 0; i1 < 5; i1++) {
-          DEC_param = i1 + 5 * b_i;
-          P_cv_tmp[DEC_param + 25 * sample_ts] = P_cv_old[DEC_param];
+          i = i1 + 5 * b_i;
+          P_cv_tmp[i + 25 * sample_ts] = P_cv_old[i];
         }
       }
       Mixing(c_ctrv, x_ctrv, P_ctrv_old, mu_ctrv, tmp_TTC, x_cv, P_cv_old,
@@ -1081,10 +1073,10 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
     }
     for (b_i = 0; b_i < 5; b_i++) {
       for (i1 = 0; i1 < 5; i1++) {
-        DEC_param = i1 + 5 * b_i;
-        i = DEC_param + 25 * track_number;
-        out_P_ctrv[i] = P_ctrv_tmp[DEC_param];
-        out_P_cv[i] = P_cv_tmp[DEC_param];
+        i = i1 + 5 * b_i;
+        P_ctrv_old_tmp = i + 25 * track_number;
+        out_P_ctrv[P_ctrv_old_tmp] = P_ctrv_tmp[i];
+        out_P_cv[P_ctrv_old_tmp] = P_cv_tmp[i];
       }
     }
   }
@@ -1095,11 +1087,11 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
     double target_vel_x;
     double target_vel_y;
     //  Add Threat Metric to Training Data
-    DEC_param = 28 * track_number + 7;
-    t = Training_data_data[DEC_param];
+    t = Training_data_data[28 * track_number + 7];
     target_vel_x = d + t;
     target_vel_y = d1 + Training_data_data[28 * track_number + 8];
     //     %% TTC
+    i = 28 * track_number + 5;
     //  TTC Calculates time to collision in ROI.
     //
     //  TTC_out = TTC(rel_pos_x, rel_pos_y, rel_vel_x, ROI)
@@ -1114,9 +1106,8 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
     //                        longitudinal position of ROI TTC_PARAM.ROI.X_MAX :
     //                        maximum relative longitudinal position of ROI
     //                        TTC_PARAM.TTC_MAX   : default value for exception
-    b_i = 28 * track_number + 6;
-    if (std::abs(Training_data_data[b_i]) <= 2.0) {
-      tmp_TTC = -Training_data_data[28 * track_number + 5] / t;
+    if (std::abs(Training_data_data[28 * track_number + 6]) <= 2.0) {
+      tmp_TTC = -Training_data_data[i] / t;
     } else {
       tmp_TTC = 11.0;
     }
@@ -1177,50 +1168,16 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
               target_vel_y, &Training_data_data[28 * track_number + 17], &t);
     Training_data_data[28 * track_number + 18] = t;
     //     %% Honda warning and avoidance algorithm (dw,dbr)
-    //   HONDA calculates Honda's time to collision algorithm in ROI.
-    //
-    //  HONDA_out = HONDA(rel_pos_x, rel_pos_y, rel_vel_x, ROI)
-    //  rel_pos_x {double} : Relative longitudinal position (m)
-    //  rel_pos_y {double} : Relative lateral position (m)
-    //  rel_vel_x {double} : Relative longitudinal velocity (m/s)
-    //  HONDA_PARAM {struct} : Parameters for calculation of Honda algorithm
-    //                        HONDA_PARAM.ROI.Y_MIN : minimum relative lateral
-    //                        position of ROI HONDA_PARAM.ROI.Y_MAX : maximum
-    //                        relative lateral position of ROI
-    //                        HONDA_PARAM.ROI.X_MIN : minimum relative
-    //                        longitudinal position of ROI HONDA_PARAM.ROI.X_MAX
-    //                        : maximum relative longitudinal position of ROI
-    //                        HONDA_PARAM.HONDA_MIN   : default value for
-    //                        exception
-    if ((Training_data_data[b_i] >= -2.0) && (Training_data_data[b_i] <= 2.0)) {
-      c_ctrv = Training_data_data[28 * track_number + 5];
-      if ((c_ctrv >= -1.0) && (c_ctrv <= 120.0)) {
-        Prob_cv_old = -2.2 * Training_data_data[DEC_param] + 6.2;
-      } else {
-        Prob_cv_old = 1.0;
-      }
-    } else {
-      Prob_cv_old = 1.0;
-    }
-    if (d >= 11.67) {
-      v_e = (0.2 * -Training_data_data[DEC_param] - 0.20000000000000004) -
-            0.05000000000000001;
-    } else {
-      v_e =
-          (0.2 * d - 0.05000000000000001) - target_vel_x * target_vel_x / 20.0;
-    }
-    if (target_vel_x < -0.1) {
-      v_e =
-          (0.2 * d - 0.05000000000000001) + target_vel_x * target_vel_x / 20.0;
-    }
-    if (v_e < 0.0) {
-      v_e = 0.0;
-    }
+    HONDA(Training_data_data[28 * track_number + 5],
+          Training_data_data[28 * track_number + 6],
+          Training_data_data[28 * track_number + 7], d, target_vel_x,
+          &Prob_cv_old, &t);
     //  THM(HONDA)
-    t = (Training_data_data[28 * track_number + 5] - v_e) / (Prob_cv_old - v_e);
+    c_ctrv = Training_data_data[i];
     Training_data_data[28 * track_number + 19] = Prob_cv_old;
-    Training_data_data[28 * track_number + 20] = v_e;
-    Training_data_data[28 * track_number + 21] = t;
+    Training_data_data[28 * track_number + 20] = t;
+    Training_data_data[28 * track_number + 21] =
+        (c_ctrv - t) / (Prob_cv_old - t);
     Training_data_data[28 * track_number + 22] = 0.0;
     Training_data_data[28 * track_number + 23] = 0.0;
     Training_data_data[28 * track_number + 24] = 0.0;
@@ -1242,325 +1199,501 @@ void BEV_image(const double Chassis[11], const double Traffic[288],
   laneInfoR[2] = Lane[5];
   laneInfoR[3] = Lane[7];
   laneInfoR[4] = Lane[9];
-  //  for track_number = 1:Traffic_Number
-  // AES
-#ifdef AES_OPENMP
-  #pragma omp parallel for
-  for(int idx = 0;idx<32;++idx) {
-//    printf("AES check\n");
-    std::copy(&image[0], &image[275598], &BEV_Window_out_all[idx][0]);
-    AES_funcs[idx](Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, image, X_pred, TJ_X, TJ_Y, BEV_Window_out_all[idx]);
-  }
-//  AES_funcs[31](Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-//             x_ini, laneInfoR, image, X_pred, TJ_X, TJ_Y, );
-
-#else
+  //  empty_black_image = zeros(CHANNEL.IMAGE_X, CHANNEL.IMAGE_Y,
+  //  CHANNEL.IMAGE_Z); % input으로 바꾸는게 좋을듯 for track_number =
+  //  1:Traffic_Number
   std::copy(&image[0], &image[275598], &BEV_Window_out_1[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-           x_ini, laneInfoR, BEV_Window_out_1, X_pred, TJ_X, TJ_Y);
+           x_ini, laneInfoR, BEV_Window_out_1, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_2[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   b_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_2, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_2, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_3[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   c_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_3, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_3, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_4[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   d_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_4, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_4, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_5[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   e_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_5, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_5, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_6[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   f_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_6, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_6, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_7[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   g_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_7, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_7, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_8[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   h_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_8, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_8, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_9[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   i_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_9, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_9, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_10[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   j_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_10, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_10, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_11[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   k_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_11, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_11, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_12[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   l_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_12, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_12, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_13[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   m_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_13, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_13, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_14[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   n_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_14, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_14, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_15[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   o_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_15, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_15, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_16[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   p_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_16, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_16, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_17[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   q_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_17, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_17, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_18[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   r_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_18, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_18, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_19[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   s_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_19, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_19, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_20[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   t_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_20, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_20, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_21[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   u_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_21, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_21, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_22[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   v_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_22, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_22, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_23[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   w_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_23, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_23, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_24[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   x_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_24, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_24, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_25[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   y_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-             x_ini, laneInfoR, BEV_Window_out_25, X_pred, TJ_X, TJ_Y);
+             x_ini, laneInfoR, BEV_Window_out_25, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_26[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   ab_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-              x_ini, laneInfoR, BEV_Window_out_26, X_pred, TJ_X, TJ_Y);
+              x_ini, laneInfoR, BEV_Window_out_26, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_27[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   bb_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-              x_ini, laneInfoR, BEV_Window_out_27, X_pred, TJ_X, TJ_Y);
+              x_ini, laneInfoR, BEV_Window_out_27, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_28[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   cb_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-              x_ini, laneInfoR, BEV_Window_out_28, X_pred, TJ_X, TJ_Y);
+              x_ini, laneInfoR, BEV_Window_out_28, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_29[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   db_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-              x_ini, laneInfoR, BEV_Window_out_29, X_pred, TJ_X, TJ_Y);
+              x_ini, laneInfoR, BEV_Window_out_29, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_30[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   eb_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-              x_ini, laneInfoR, BEV_Window_out_30, X_pred, TJ_X, TJ_Y);
+              x_ini, laneInfoR, BEV_Window_out_30, b_X_pred, TJ_X, TJ_Y);
   std::copy(&image[0], &image[275598], &BEV_Window_out_31[0]);
+  std::copy(&X_pred[0], &X_pred[1600], &b_X_pred[0]);
   fb_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
-              x_ini, laneInfoR, BEV_Window_out_31, X_pred, TJ_X, TJ_Y);
+              x_ini, laneInfoR, BEV_Window_out_31, b_X_pred, TJ_X, TJ_Y);
   gb_tmp_SBEV(Chassis, State, RANGE_X_RANGE, RANGE_Y_RANGE, RANGE_I_LAT_RANGE,
               x_ini, laneInfoR, image, X_pred, TJ_X, TJ_Y);
-#endif
-  for (DEC_param = 0; DEC_param < 18; DEC_param++) {
-    if ((DEC_param + 1 == 1) || (DEC_param + 1 == 4) || (DEC_param + 1 == 7) ||
-        (DEC_param + 1 == 10) || (DEC_param + 1 == 13) ||
-        (DEC_param + 1 == 16)) {
-      for (b_i = 0; b_i < 61; b_i++) {
-        for (i1 = 0; i1 < 251; i1++) {
-          i = (i1 + 251 * b_i) + 15311 * DEC_param;
-#ifdef AES_OPENMP
-          sample_ts = static_cast<int>(static_cast<unsigned int>(BEV_Window_out_all[0][i]) +
-                                       BEV_Window_out_all[1][i]);
-          if(static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          for(int iii=2;iii<32;++iii) {
-            sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                         BEV_Window_out_all[iii][i]);
-            if(static_cast<unsigned int>(sample_ts) > 255U) {
-              sample_ts = 255;
-            }
-          }
-
-
-#else
-
-          sample_ts =
-              static_cast<int>(static_cast<unsigned int>(BEV_Window_out_1[i]) +
-                               BEV_Window_out_2[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_3[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_4[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_5[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_6[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_7[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_8[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_9[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_10[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_11[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_12[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_13[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_14[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_15[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_16[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_17[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_18[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_19[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_20[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_21[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_22[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_23[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_24[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_25[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_26[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_27[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_28[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_29[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_30[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
-                                       BEV_Window_out_31[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-          sample_ts =
-              static_cast<int>(static_cast<unsigned int>(sample_ts) + image[i]);
-          if (static_cast<unsigned int>(sample_ts) > 255U) {
-            sample_ts = 255;
-          }
-#endif
-          b_BEV_image[i] = static_cast<unsigned char>(sample_ts);
+  for (i = 0; i < 18; i++) {
+    //          tmp_BEV_Window_out = coder.nullcopy(zeros(251,61,1),'double');
+    for (b_i = 0; b_i < 61; b_i++) {
+      for (i1 = 0; i1 < 251; i1++) {
+        P_ctrv_old_tmp = (i1 + 251 * b_i) + 15311 * i;
+        sample_ts = static_cast<int>(
+            static_cast<unsigned int>(BEV_Window_out_1[P_ctrv_old_tmp]) +
+            BEV_Window_out_2[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
         }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_3[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_4[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_5[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_6[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_7[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_8[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_9[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_10[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_11[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_12[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_13[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_14[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_15[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_16[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_17[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_18[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_19[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_20[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_21[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_22[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_23[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_24[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_25[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_26[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_27[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_28[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_29[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_30[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     BEV_Window_out_31[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        sample_ts = static_cast<int>(static_cast<unsigned int>(sample_ts) +
+                                     image[P_ctrv_old_tmp]);
+        if (static_cast<unsigned int>(sample_ts) > 255U) {
+          sample_ts = 255;
+        }
+        BEV_Window_out[P_ctrv_old_tmp] = static_cast<unsigned char>(sample_ts);
       }
-    } else {
-#ifdef AES_OPENMP
-      for (b_i = 0; b_i < 61; b_i++) {
-        std::copy(&BEV_Window_out_all[0][DEC_param * 15311 + b_i * 251],
-                  &BEV_Window_out_all[0][static_cast<int>(
-                      (DEC_param * 15311 + b_i * 251) + 251U)],
-                  &b_BEV_image[DEC_param * 15311 + b_i * 251]);
-      }
-#else
-      for (b_i = 0; b_i < 61; b_i++) {
-        std::copy(&BEV_Window_out_1[DEC_param * 15311 + b_i * 251],
-                  &BEV_Window_out_1[static_cast<int>(
-                      (DEC_param * 15311 + b_i * 251) + 251U)],
-                  &b_BEV_image[DEC_param * 15311 + b_i * 251]);
-      }
-
-
-#endif
     }
   }
-  // filen = strcat('bev_image_', int2str(idx),'.jpg');
-  // imwrite(BEV_image, 'bev_image.jpg');
-#ifdef AES_DECISION_IMAGE
+  for (b_i = 0; b_i < 61; b_i++) {
+    for (i1 = 0; i1 < 251; i1++) {
+      unsigned char u1;
+      P_ctrv_old_tmp = i1 + 251 * b_i;
+      u = BEV_Window_out[P_ctrv_old_tmp];
+      tmp_BEV_Window_out[P_ctrv_old_tmp] = u;
+      u1 = BEV_Window_out[P_ctrv_old_tmp + 15311];
+      tmp_img2[P_ctrv_old_tmp] = u1;
+      tmp_img3[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 30622];
+      tmp_img4[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 45933];
+      tmp_img5[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 61244];
+      tmp_img6[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 76555];
+      tmp_img7[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 91866];
+      tmp_img8[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 107177];
+      tmp_img9[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 122488];
+      tmp_img10[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 137799];
+      tmp_img11[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 153110];
+      tmp_img12[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 168421];
+      tmp_img13[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 183732];
+      tmp_img14[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 199043];
+      tmp_img15[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 214354];
+      tmp_img16[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 229665];
+      tmp_img17[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 244976];
+      tmp_img18[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 260287];
+      bv[P_ctrv_old_tmp] = (u == 255);
+      uv[P_ctrv_old_tmp] = u1;
+    }
+  }
+  //  255 -> 0
+  //  0 -> 255
+  //  255 -> 0
+  //  0 -> 255
+  for (i = 0; i < 15311; i++) {
+    b_i = BEV_Window_out[(i % 251 + 251 * (i / 251)) + 30622];
+    u = uv[i];
+    if (bv[i] && (u == 255) && (b_i == 255)) {
+      tmp_BEV_Window_out[i] = 0U;
+    }
+    b = (tmp_BEV_Window_out[i] == 0);
+    bv[i] = b;
+    if (b && (u == 0) && (b_i == 0)) {
+      tmp_BEV_Window_out[i] = 0U;
+    }
+    uv[i] = tmp_img2[i];
+  }
+  //  255 -> 0
+  //  0 -> 255
+  for (b_i = 0; b_i < 61; b_i++) {
+    for (i1 = 0; i1 < 251; i1++) {
+      P_ctrv_old_tmp = i1 + 251 * b_i;
+      bv[P_ctrv_old_tmp] = (BEV_Window_out[P_ctrv_old_tmp + 45933] == 255);
+      uv1[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 61244];
+    }
+  }
+  //  255 -> 0
+  //  0 -> 255
+  //  255 -> 0
+  //  0 -> 255
+  for (i = 0; i < 15311; i++) {
+    b_i = BEV_Window_out[(i % 251 + 251 * (i / 251)) + 76555];
+    u = uv1[i];
+    if (bv[i] && (u == 255) && (b_i == 255)) {
+      tmp_img4[i] = 0U;
+    }
+    b = (tmp_img4[i] == 0);
+    bv[i] = b;
+    if (b && (u == 0) && (b_i == 0)) {
+      tmp_img4[i] = 0U;
+    }
+    uv1[i] = tmp_img5[i];
+  }
+  //  255 -> 0
+  //  0 -> 255
+  for (b_i = 0; b_i < 61; b_i++) {
+    for (i1 = 0; i1 < 251; i1++) {
+      P_ctrv_old_tmp = i1 + 251 * b_i;
+      bv[P_ctrv_old_tmp] = (BEV_Window_out[P_ctrv_old_tmp + 91866] == 255);
+      uv2[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 107177];
+    }
+  }
+  //  255 -> 0
+  //  0 -> 255
+  //  255 -> 0
+  //  0 -> 255
+  for (i = 0; i < 15311; i++) {
+    b_i = BEV_Window_out[(i % 251 + 251 * (i / 251)) + 122488];
+    u = uv2[i];
+    if (bv[i] && (u == 255) && (b_i == 255)) {
+      tmp_img7[i] = 0U;
+    }
+    b = (tmp_img7[i] == 0);
+    bv[i] = b;
+    if (b && (u == 0) && (b_i == 0)) {
+      tmp_img7[i] = 0U;
+    }
+    uv2[i] = tmp_img8[i];
+  }
+  //  255 -> 0
+  //  0 -> 255
+  for (b_i = 0; b_i < 61; b_i++) {
+    for (i1 = 0; i1 < 251; i1++) {
+      P_ctrv_old_tmp = i1 + 251 * b_i;
+      bv[P_ctrv_old_tmp] = (BEV_Window_out[P_ctrv_old_tmp + 137799] == 255);
+      tmp_img8[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 153110];
+    }
+  }
+  //  255 -> 0
+  //  0 -> 255
+  //  255 -> 0
+  //  0 -> 255
+  for (i = 0; i < 15311; i++) {
+    b_i = BEV_Window_out[(i % 251 + 251 * (i / 251)) + 168421];
+    u = tmp_img8[i];
+    if (bv[i] && (u == 255) && (b_i == 255)) {
+      tmp_img10[i] = 0U;
+    }
+    b = (tmp_img10[i] == 0);
+    bv[i] = b;
+    if (b && (u == 0) && (b_i == 0)) {
+      tmp_img10[i] = 0U;
+    }
+    tmp_img8[i] = tmp_img11[i];
+  }
+  //  255 -> 0
+  //  0 -> 255
+  for (b_i = 0; b_i < 61; b_i++) {
+    for (i1 = 0; i1 < 251; i1++) {
+      P_ctrv_old_tmp = i1 + 251 * b_i;
+      bv[P_ctrv_old_tmp] = (BEV_Window_out[P_ctrv_old_tmp + 183732] == 255);
+      tmp_img5[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 199043];
+    }
+  }
+  //  255 -> 0
+  //  0 -> 255
+  //  255 -> 0
+  //  0 -> 255
+  for (i = 0; i < 15311; i++) {
+    b_i = BEV_Window_out[(i % 251 + 251 * (i / 251)) + 214354];
+    u = tmp_img5[i];
+    if (bv[i] && (u == 255) && (b_i == 255)) {
+      tmp_img13[i] = 0U;
+    }
+    b = (tmp_img13[i] == 0);
+    bv[i] = b;
+    if (b && (u == 0) && (b_i == 0)) {
+      tmp_img13[i] = 0U;
+    }
+    tmp_img5[i] = tmp_img14[i];
+  }
+  //  255 -> 0
+  //  0 -> 255
+  for (b_i = 0; b_i < 61; b_i++) {
+    for (i1 = 0; i1 < 251; i1++) {
+      P_ctrv_old_tmp = i1 + 251 * b_i;
+      bv[P_ctrv_old_tmp] = (BEV_Window_out[P_ctrv_old_tmp + 229665] == 255);
+      tmp_img2[P_ctrv_old_tmp] = BEV_Window_out[P_ctrv_old_tmp + 244976];
+    }
+  }
+  //  255 -> 0
+  //  0 -> 255
+  //  255 -> 0
+  //  0 -> 255
+  for (i = 0; i < 15311; i++) {
+    b_i = BEV_Window_out[(i % 251 + 251 * (i / 251)) + 260287];
+    u = tmp_img2[i];
+    if (bv[i] && (u == 255) && (b_i == 255)) {
+      tmp_img16[i] = 0U;
+    }
+    b = (tmp_img16[i] == 0);
+    bv[i] = b;
+    if (b && (u == 0) && (b_i == 0)) {
+      tmp_img16[i] = 0U;
+    }
+    tmp_img2[i] = tmp_img17[i];
+  }
+  //  255 -> 0
+  //  0 -> 255
+  for (b_i = 0; b_i < 61; b_i++) {
+    for (i1 = 0; i1 < 251; i1++) {
+      i = i1 + 251 * b_i;
+      b_BEV_image[i] = tmp_BEV_Window_out[i];
+      b_BEV_image[i + 15311] = uv[i];
+      b_BEV_image[i + 30622] = tmp_img3[i];
+      b_BEV_image[i + 45933] = tmp_img4[i];
+      b_BEV_image[i + 61244] = uv1[i];
+      b_BEV_image[i + 76555] = tmp_img6[i];
+      b_BEV_image[i + 91866] = tmp_img7[i];
+      b_BEV_image[i + 107177] = uv2[i];
+      b_BEV_image[i + 122488] = tmp_img9[i];
+      b_BEV_image[i + 137799] = tmp_img10[i];
+      b_BEV_image[i + 153110] = tmp_img8[i];
+      b_BEV_image[i + 168421] = tmp_img12[i];
+      b_BEV_image[i + 183732] = tmp_img13[i];
+      b_BEV_image[i + 199043] = tmp_img5[i];
+      b_BEV_image[i + 214354] = tmp_img15[i];
+      b_BEV_image[i + 229665] = tmp_img16[i];
+      b_BEV_image[i + 244976] = tmp_img2[i];
+      b_BEV_image[i + 260287] = tmp_img18[i];
+    }
+  }
   matlab_array2magick(b_BEV_image, image_magick);
-#endif
 }
 
 //

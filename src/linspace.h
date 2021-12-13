@@ -5,7 +5,7 @@
 // File: linspace.h
 //
 // MATLAB Coder version            : 5.2
-// C/C++ source code generated on  : 10-Nov-2021 22:00:36
+// C/C++ source code generated on  : 13-Dec-2021 11:53:25
 //
 
 #ifndef LINSPACE_H
@@ -18,7 +18,7 @@
 
 // Function Declarations
 namespace coder {
-void linspace(double d1, double d2, double y[10]);
+void linspace(double d1, double d2, double y[20]);
 
 }
 

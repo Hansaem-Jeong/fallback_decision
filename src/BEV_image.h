@@ -5,7 +5,7 @@
 // File: BEV_image.h
 //
 // MATLAB Coder version            : 5.2
-// C/C++ source code generated on  : 10-Nov-2021 22:00:36
+// C/C++ source code generated on  : 13-Dec-2021 11:53:25
 //
 
 #ifndef BEV_IMAGE_H
@@ -17,16 +17,10 @@
 #include <cstdlib>
 
 // Function Declarations
-#ifdef AES_DECISION_IMAGE
 extern void BEV_image(const double Chassis[11], const double Traffic[288],
                       const double Lane[10], double AEB_in,
                       unsigned char b_BEV_image[275598],
                       unsigned char image_magick[275598]);
-#else
-extern void BEV_image(const double Chassis[11], const double Traffic[288],
-                      const double Lane[10], double AEB_in,
-                      unsigned char b_BEV_image[275598]);
-#endif
 
 void out_Prob_ctrv_not_empty_init();
 

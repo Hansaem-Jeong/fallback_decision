@@ -134,7 +134,7 @@ int aes_object;
 #ifdef AES_DECISION_MEASURE
 #include <sys/stat.h>
 #define MEASUREMENT_CNT 1000
-#define THRESHOLD 25
+#define THRESHOLD 200
 int meas_object[MEASUREMENT_CNT];
 int meas_result[MEASUREMENT_CNT];
 double meas_cycletime[MEASUREMENT_CNT];
@@ -228,6 +228,7 @@ void AES_Decision(void)
 #ifdef AES_DECISION_MEASURE
     meas_cnt += 1;
     int tmp_cnt = meas_cnt - THRESHOLD;
+    printf("- Measure Count: %d\n", tmp_cnt);
     if(tmp_cnt>=0&&tmp_cnt<=MEASUREMENT_CNT) {
         meas_cycletime[tmp_cnt] = (double)(end_c - start_c)/CLOCKS_PER_SEC;
         meas_object[tmp_cnt] = aes_object;
