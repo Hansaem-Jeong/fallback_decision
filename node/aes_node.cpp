@@ -138,8 +138,10 @@ int aes_object;
 int meas_object[MEASUREMENT_CNT];
 int meas_result[MEASUREMENT_CNT];
 double meas_cycletime[MEASUREMENT_CNT];
+double meas_exetime[MEASUREMENT_CNT];
 
 int meas_cnt;
+static clock_t old_time;
 
 #define meas_path "./src/fallback_decision/measure/"
 #define meas_file "measure.csv"
@@ -227,10 +229,13 @@ void AES_Decision(void)
     end_c = clock();
 #ifdef AES_DECISION_MEASURE
     meas_cnt += 1;
+    int real_cycle = old_time - end_c;
+    old_time = end_c;
     int tmp_cnt = meas_cnt - THRESHOLD;
     printf("- Measure Count: %d\n", tmp_cnt);
     if(tmp_cnt>=0&&tmp_cnt<=MEASUREMENT_CNT) {
-        meas_cycletime[tmp_cnt] = (double)(end_c - start_c)/CLOCKS_PER_SEC;
+        meas_exetime[tmp_cnt] = (double)(end_c - start_c)/CLOCKS_PER_SEC;
+        meas_cycletime[tmp_cnt] = (double)(real_cycle)/CLOCKS_PER_SEC;
         meas_object[tmp_cnt] = aes_object;
         meas_result[tmp_cnt] = (int)outResult;
     }
@@ -254,16 +259,17 @@ void AES_Decision(void)
                 }
             }
         }
-        fprintf(fp, "%s,%s,%s\n", "result", "object", "cycle_time");
+        fprintf(fp, "%s,%s,%s,%s\n", "result", "object", "exe_time", "cycle");
         for(int i =0;i<tmp_cnt;++i) {
-            fprintf(fp, "%d,%d,%.0f\n", meas_result[i], meas_object[i], meas_cycletime[i]*1000);
+            fprintf(fp, "%d,%d,%.0f,%.0f\n", meas_result[i], meas_object[i], meas_exetime[i]*1000, meas_cycletime[i]*1000);
         }
         fclose(fp);
         printf(" AES Measure , Complete\n");
     }
-    printf("index: %d-th\n", meas_cnt);
-    printf("Result: %lf, ", outResult);
-    printf("CycleTime: %lf (bev: %lf, predictL %lf)\n",(double)(end_c-start_c)/CLOCKS_PER_SEC,(double)(half_c-start_c)/CLOCKS_PER_SEC,(double)(end_c-half_c)/CLOCKS_PER_SEC);
+    printf(" - index: %d-th\n", meas_cnt);
+    printf("        Result: %lf \n", outResult);
+    printf("Execution Time: %lf (bev: %lf, predictL %lf)\n",(double)(end_c-start_c)/CLOCKS_PER_SEC,(double)(half_c-start_c)/CLOCKS_PER_SEC,(double)(end_c-half_c)/CLOCKS_PER_SEC);
+    printf("    Cycle Time: %lf\n", (double)(real_cycle)/CLOCKS_PER_SEC);
 
 #endif
     
