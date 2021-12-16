@@ -229,7 +229,7 @@ void AES_Decision(void)
     end_c = clock();
 #ifdef AES_DECISION_MEASURE
     meas_cnt += 1;
-    int real_cycle = old_time - end_c;
+    int real_cycle = end_c - old_time;
     old_time = end_c;
     int tmp_cnt = meas_cnt - THRESHOLD;
     printf("- Measure Count: %d\n", tmp_cnt);
